@@ -67,5 +67,5 @@ jobs:
         with:
           name: rpv-web-x64
           path: |
-            frontend
+            frontend/dist
             rpv-web-x64.exe
