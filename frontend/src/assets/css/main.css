@@ -1,0 +1,82 @@
+@import "primer.css";
+
+html {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+}
+
+#app {
+    width: 100%;
+    height: 100%;
+}
+
+.W-90 {
+    width: 90%;
+}
+
+.WH-100 {
+    width: 100%;
+    height: 100%;
+}
+
+.Fs-8 {
+    font-size: 8pt;
+}
+
+.SmallBorder {
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 15px;
+    overflow: auto;
+    padding: 10px;
+}
+
+.GenericTable {
+    width: 100%;
+    text-align: left;
+    white-space: nowrap;
+    overflow: auto;
+}
+
+.Selected {
+    background-color: #6b77e5 !important;
+}
+
+.Rpc {
+    background-color: #ffd379;
+}
+
+.Dcom {
+    background-color: #c694ff;
+}
+
+.Hybrid {
+    background-color: #acd2ce;
+}
+
+.WrongArch {
+    background-color: #ffabab;
+}
+
+* {
+    scrollbar-width: thin;
+}
+
+*::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+}
+
+*::-webkit-scrollbar-thumb {
+  border-radius: 8px !important;
+  background: #aaaaaa !important;
+}
+
+pre > code {
+    font-size: 12pt;
+}

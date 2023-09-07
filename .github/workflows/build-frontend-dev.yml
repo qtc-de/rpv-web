@@ -1,0 +1,64 @@
+name: Build Frontend
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - frontend/**
+      - .github/workflows/build-frontend-dev.yml
+  pull_request:
+    branches:
+      - develop
+    paths:
+      - frontend/**
+      - .github/workflows/build-frontend-dev.yml
+
+jobs:
+  build-online:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout ${{ github.event.repository.name }}
+        uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+
+      - name: Build Frontend
+        working-directory: frontend
+        run: |
+          npm install
+          npm run build
+
+      - name: Archive online application
+        uses: actions/upload-artifact@v3
+        with:
+          name: rpv-web-online
+          path: frontend/dist
+
+  build-offline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout ${{ github.event.repository.name }}
+        uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+
+      - name: Build Frontend
+        working-directory: frontend
+        run: |
+          npm install
+          npm run build -- --mode offline
+
+      - name: Archive offline application
+        uses: actions/upload-artifact@v3
+        with:
+          name: rpv-web-offline
+          path: frontend/dist
