@@ -27,6 +27,7 @@ jobs:
 
       - name: Build rpv-web
         run: |
+          v install qtc-de.rpv
           make
 
       - name: Archive rpv-web
