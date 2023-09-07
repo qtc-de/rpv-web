@@ -56,6 +56,7 @@ jobs:
         run: |
           npm install
           npm run build
+          mv frontend/dist dist
 
       - name: Download rpv-web-x64
         uses: actions/download-artifact@v3
@@ -67,5 +68,5 @@ jobs:
         with:
           name: rpv-web-x64
           path: |
-            frontend/dist
+            dist
             rpv-web-x64.exe
