@@ -1,8 +1,8 @@
 module main
 
 import os
-import rpv
 import vweb
+import qtc_de.rpv
 
 
 // refresh obtains RPC information for currently running processes and stores

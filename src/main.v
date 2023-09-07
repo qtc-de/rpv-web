@@ -1,11 +1,11 @@
 module main
 
 import os
-import rpv
 import json
 import vweb
 import time
-import rpv.win
+import qtc_de.rpv
+import qtc_de.rpv.win
 import cli { Command, Flag }
 
 // In the current state of vweb, we have to use globals to track our

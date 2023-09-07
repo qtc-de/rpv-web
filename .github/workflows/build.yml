@@ -1,4 +1,4 @@
-name: Build Frontend
+name: Build rpv-web
 
 on:
   push:
@@ -6,7 +6,9 @@ on:
       - main
     paths:
       - frontend/**
-      - .github/workflows/build-frontend.yml
+      - src/**
+      - Makefile
+      - .github/workflows/build.yml
 
 jobs:
   build-rpv-web:

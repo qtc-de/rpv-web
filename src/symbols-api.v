@@ -1,9 +1,9 @@
 module main
 
-import rpv
 import toml
 import vweb
 import x.json2
+import qtc_de.rpv
 
 // update_symbols allows callers to merge an rpv-web symbol file with
 // the symbol file that is currently used by the server.

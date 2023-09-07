@@ -1,6 +1,6 @@
 module main
 
-import rpv
+import qtc_de.rpv
 
 // get_process returns the RpvWebProcessInformation associated with
 // the specified pid. The pid is looked up in the global process array.
