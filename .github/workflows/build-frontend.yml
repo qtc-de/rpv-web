@@ -7,16 +7,37 @@ on:
     paths:
       - frontend/**
       - .github/workflows/build-frontend.yml
-  pull_request:
-    branches:
-      - main
-    paths:
-      - frontend/**
-      - .github/workflows/build-frontend.yml
 
 jobs:
-  build-online:
+  build-rpv-web:
     runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout ${{ github.event.repository.name }}
+        uses: actions/checkout@v3
+
+      - name: Install V
+        uses: vlang/setup-v@v1.3
+        with:
+          version: '0.4'
+
+      - name: Install mingw
+        run: |
+          sudo apt install -y gcc-mingw-w64
+
+      - name: Build rpv-web
+        run: |
+          make
+
+      - name: Archive rpv-web
+        uses: actions/upload-artifact@v3
+        with:
+          name: rpv-web-x64
+          path: rpv-web-x64.exe
+
+  build-frontend:
+    runs-on: ubuntu-latest
+    needs: build-rpv-web
 
     steps:
       - name: Checkout ${{ github.event.repository.name }}
@@ -33,32 +54,15 @@ jobs:
           npm install
           npm run build
 
-      - name: Archive online application
+      - name: Download rpv-web-x64
+        uses: actions/download-artifact@v3
+        with:
+          name: rpv-web-x64
+
+      - name: Archive frontend and rpv-web
         uses: actions/upload-artifact@v3
         with:
-          name: rpv-web-online
-          path: frontend/dist
-
-  build-offline:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout ${{ github.event.repository.name }}
-        uses: actions/checkout@v3
-
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20.x'
-
-      - name: Build Frontend
-        working-directory: frontend
-        run: |
-          npm install
-          npm run build -- --mode offline
-
-      - name: Archive offline application
-        uses: actions/upload-artifact@v3
-        with:
-          name: rpv-web-offline
-          path: frontend/dist
+          name: rpv-web-x64
+          path: |
+            frontend
+            rpv-web-x64.exe
