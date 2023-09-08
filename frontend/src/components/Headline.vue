@@ -79,13 +79,20 @@
                     },
                     body: JSON.stringify(data)
 
-                }).then(response => {
+                }).then(response =>
+                {
 
                     if (response.ok)
                     {
-                        const settings = response.json();
-                        this.$refs['SymbolFolder'].value = settings['symbol_path']
-                        this.settingsError = false;
+                        response.json().then(settings =>
+                        {
+                            this.$refs['SymbolFolder'].value = settings.symbol_path;
+                            this.settingsError = false;
+                        }).catch(err =>
+                        {
+                            console.log(err);
+                            this.settingsError = true;
+                        });
                     }
 
                     else
@@ -94,7 +101,8 @@
                         this.settingsError = true;
                     }
 
-                }).catch(error => {
+                }).catch(error =>
+                {
                     console.log(error);
                     this.settingsError = true;
                 });
@@ -112,8 +120,13 @@
                 {
                     if (response.ok)
                     {
-                        const settings = response.json();
-                        this.$refs['SymbolFolder'].value = settings['symbol_path'];
+                        response.json().then(settings =>
+                        {
+                            this.$refs['SymbolFolder'].value = settings.symbol_path;
+                        }).catch(err =>
+                        {
+                            console.log(err);
+                        });
                     }
 
                     else
@@ -384,7 +397,7 @@
 
         <p class="PaneOption ml-4">PDB Folder Path</p>
         <p class="PaneText">Absolute file system path to a folder containing PDB files that are used for displaying symbol
-        names within the RPC information.</p>
+        names within the RPC information (prefix with srv*).</p>
         <input ref="SymbolFolder" class="W-90 ml-4" />
         <hr/>
 
