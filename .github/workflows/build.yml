@@ -27,12 +27,12 @@ jobs:
         run: |
           sudo apt install -y gcc-mingw-w64
 
-      - name: Build rpv-web
+      - name: Build rpv-web-x64
         run: |
           v install qtc-de.rpv
           make
 
-      - name: Archive rpv-web
+      - name: Archive rpv-web-x64
         uses: actions/upload-artifact@v3
         with:
           name: rpv-web-x64
@@ -54,13 +54,13 @@ jobs:
         run: |
           sudo apt install -y gcc-mingw-w64
 
-      - name: Build rpv-web
+      - name: Build rpv-web-x86
         run: |
           cp ~/.vmodules/qtc_de/rpv/alternate/default-x86.v ~/.vmodules/qtc_de/rpv/internals/rpc-internal-structs.v
           v install qtc-de.rpv
           make rpv-web-x86
 
-      - name: Archive rpv-web
+      - name: Archive rpv-web-x86
         uses: actions/upload-artifact@v3
         with:
           name: rpv-web-x86
@@ -68,8 +68,9 @@ jobs:
 
   build-frontend:
     runs-on: ubuntu-latest
-    needs: build-rpv-web-x86
-    needs: build-rpv-web-x64
+    needs:
+      - build-rpv-web-x86
+      - build-rpv-web-x64
 
     steps:
       - name: Checkout ${{ github.event.repository.name }}
