@@ -58,7 +58,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
 
-    needs: build-offline
+    needs: build-offline-frontend
 
     steps:
       - name: Deploy to GitHub Pages
