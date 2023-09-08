@@ -18,6 +18,9 @@ The overall design was strongly influenced by the *Qt* based application
 [RpcView](https://www.rpcview.org/).
 
 
+![rpv-web](https://github.com/qtc-de/rpv-web/assets/49147108/a2de08b6-e7f9-4a90-948c-bd9b1f37d150)
+
+
 ### Installation
 
 ----
