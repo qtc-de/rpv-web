@@ -11,7 +11,7 @@ on:
       - .github/workflows/build.yml
 
 jobs:
-  build-rpv-web:
+  build-rpv-web-x64:
     runs-on: ubuntu-latest
 
     steps:
@@ -38,9 +38,38 @@ jobs:
           name: rpv-web-x64
           path: rpv-web-x64.exe
 
+  build-rpv-web-x86:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout ${{ github.event.repository.name }}
+        uses: actions/checkout@v3
+
+      - name: Install V
+        uses: vlang/setup-v@v1.3
+        with:
+          version: '0.4'
+
+      - name: Install mingw
+        run: |
+          sudo apt install -y gcc-mingw-w64
+
+      - name: Build rpv-web
+        run: |
+          cp ~/.vmodules/qtc_de/rpv/alternate/default-x86.v ~/.vmodules/qtc_de/rpv/internals/rpc-internal-structs.v
+          v install qtc-de.rpv
+          make rpv-web-x86
+
+      - name: Archive rpv-web
+        uses: actions/upload-artifact@v3
+        with:
+          name: rpv-web-x86
+          path: rpv-web-x86.exe
+
   build-frontend:
     runs-on: ubuntu-latest
-    needs: build-rpv-web
+    needs: build-rpv-web-x86
+    needs: build-rpv-web-x64
 
     steps:
       - name: Checkout ${{ github.event.repository.name }}
@@ -63,10 +92,16 @@ jobs:
         with:
           name: rpv-web-x64
 
+      - name: Download rpv-web-x86
+        uses: actions/download-artifact@v3
+        with:
+          name: rpv-web-x86
+
       - name: Archive frontend and rpv-web
         uses: actions/upload-artifact@v3
         with:
-          name: rpv-web-x64
+          name: rpv-web
           path: |
             dist
             rpv-web-x64.exe
+            rpv-web-x86.exe
