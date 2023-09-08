@@ -8,7 +8,7 @@
 [![](https://img.shields.io/badge/version-1.0.0-blue)](https://github.com/qtc-de/rpv-web/releases)
 [![](https://img.shields.io/badge/language-v-blue)](https://vlang.io/)
 [![](https://img.shields.io/badge/license-GPL%20v3.0-blue)](https://github.com/qtc-de/rpv-web/blob/master/LICENSE)
-[![](https://img.shields.io/badge/Pages-fa6b05)](https://qtc-de.github.io/rpv)
+[![](https://img.shields.io/badge/Pages-fa6b05)](https://qtc-de.github.io/rpv-web/)
 [![](https://img.shields.io/badge/Wiki-5669fc)](https://github.com/qtc-de/rpv-web/wiki)
 
 *rpv-web* is a browser based frontend for the [rpv](https://github.com/qtc-de/rpv)
