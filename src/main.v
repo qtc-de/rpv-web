@@ -25,8 +25,9 @@ struct App {
 }
 
 struct RpvWebSettings {
-	symbol_path string
 	symbol_file string
+    mut:
+	symbol_path string
 }
 
 pub fn (app App) before_request()

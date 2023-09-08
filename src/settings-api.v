@@ -14,13 +14,16 @@ pub fn (mut app App) get_settings() vweb.Result
 ['/api/settings'; post]
 pub fn (mut app App) set_settings() vweb.Result
 {
-	settings := json2.decode[RpvWebSettings](app.req.data) or
+	if json_body := json2.raw_decode(app.req.data)
 	{
-		return app.json(g_settings)
-	}
+		json_map := json_body.as_map()
 
-	g_symbol_resolver.symbol_path = settings.symbol_path
-	g_settings = settings
+        if symbol_path := json_map['symbol_path'].str()
+        {
+            g_symbol_resolver.symbol_path = symbol_path
+            g_settings.symbol_path = symbol_path
+        }
+	}
 
 	return app.json(g_settings)
 }
