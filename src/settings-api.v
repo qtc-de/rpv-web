@@ -18,10 +18,10 @@ pub fn (mut app App) set_settings() vweb.Result
 	{
 		json_map := json_body.as_map()
 
-        if symbol_path := json_map['symbol_path'].str()
-        {
-            g_symbol_resolver.symbol_path = symbol_path
-            g_settings.symbol_path = symbol_path
+		if symbol_path := json_map['symbol_path']
+		{
+            g_symbol_resolver.symbol_path = symbol_path.str()
+            g_settings.symbol_path = symbol_path.str()
         }
 	}
 
