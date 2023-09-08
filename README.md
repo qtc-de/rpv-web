@@ -1,6 +1,15 @@
-### rpv-web
+<div align="center">
+  <img src="https://github.com/qtc-de/rpv-web/assets/49147108/d14f5a54-8c87-4372-9671-d47676219ded"/>
+</div>
+<br/>
 
-----
+[![](https://github.com/qtc-de/rpv-web/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/qtc-de/rpv-web/actions/workflows/build.yml)
+[![](https://github.com/qtc-de/rpv-web/actions/workflows/build-dev.yml/badge.svg?branch=develop)](https://github.com/qtc-de/rpv-web/actions/workflows/build-dev.yml)
+[![](https://img.shields.io/badge/version-1.0.0-blue)](https://github.com/qtc-de/rpv-web/releases)
+[![](https://img.shields.io/badge/language-v-blue)](https://vlang.io/)
+[![](https://img.shields.io/badge/license-GPL%20v3.0-blue)](https://github.com/qtc-de/rpv-web/blob/master/LICENSE)
+[![](https://img.shields.io/badge/Pages-fa6b05)](https://qtc-de.github.io/rpv)
+[![](https://img.shields.io/badge/Wiki-5669fc)](https://github.com/qtc-de/rpv-web/wiki)
 
 *rpv-web* is a browser based frontend for the [rpv](https://github.com/qtc-de/rpv)
 library. The frontend is written in [Vue](https://vuejs.org/) whereas the backend
@@ -55,7 +64,8 @@ executable (e.g. `rpv-web-x64.exe`) are placed next to each other. Starting the
 the *rpv-web* application. Binding the application to other listeners than *localhost*
 is not recommended (see [disclaimer](#disclaimer)).
 
-More detailed usage examples can be found within the [projects wiki pages](https://github.com/qtc-de/rpv-web/wiki).
+More detailed usage examples and explanations of features like snapshots or the symbol
+resolver can be found within the [projects wiki pages](https://github.com/qtc-de/rpv-web/wiki).
 
 
 ### Offline Version
