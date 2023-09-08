@@ -18,7 +18,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build-offline:
+  build-offline-frontend:
     runs-on: ubuntu-latest
 
     steps:
@@ -36,6 +36,7 @@ jobs:
       - name: Build Frontend
         working-directory: frontend
         run: |
+          sed -i '/base: /s/  \/\//  /g' vite.config.js
           npm install
           npm run build -- --mode offline
 
