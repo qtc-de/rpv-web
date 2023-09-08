@@ -26,7 +26,7 @@ struct App {
 
 struct RpvWebSettings {
 	symbol_file string
-    mut:
+	mut:
 	symbol_path string
 }
 

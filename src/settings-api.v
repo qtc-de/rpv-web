@@ -20,9 +20,9 @@ pub fn (mut app App) set_settings() vweb.Result
 
 		if symbol_path := json_map['symbol_path']
 		{
-            g_symbol_resolver.symbol_path = symbol_path.str()
-            g_settings.symbol_path = symbol_path.str()
-        }
+		    g_symbol_resolver.symbol_path = symbol_path.str()
+		    g_settings.symbol_path = symbol_path.str()
+		}
 	}
 
 	return app.json(g_settings)
