@@ -11,7 +11,7 @@ RUN adduser --gecos '' --disabled-password rpv       \
 COPY . .
 
 RUN chown -R rpv:rpv /app                         \
- && su rpv -c "npm run build -- --mode offline"
+ && su rpv -c "npm run build"
 
 USER rpv:rpv
 EXPOSE 5173
