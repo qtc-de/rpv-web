@@ -56,8 +56,8 @@ jobs:
 
       - name: Build rpv-web-x86
         run: |
-          cp ~/.vmodules/qtc_de/rpv/alternate/default-x86.v ~/.vmodules/qtc_de/rpv/internals/rpc-internal-structs.v
           v install qtc-de.rpv
+          cp ~/.vmodules/qtc_de/rpv/alternate/default-x86.v ~/.vmodules/qtc_de/rpv/internals/rpc-internal-structs.v
           make rpv-web-x86
 
       - name: Archive rpv-web-x86
