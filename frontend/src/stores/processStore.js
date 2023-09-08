@@ -7,6 +7,7 @@ var processTree = [];
 var symbols = {};
 var symbolExport = {};
 var refreshTimer = 30;
+var refreshOngoing = false;
 
 var selectedPane = null;
 var selectedProcess = null;
@@ -23,6 +24,7 @@ export const processStore = defineStore(
         refreshTimer,
         selectedPane,
         symbolExport,
+        refreshOngoing,
         selectedProcess,
         selectedInterface,
     }),
@@ -203,8 +205,17 @@ export const processStore = defineStore(
         {
             if (import.meta.env.VITE_OFFLINE_MODE != 0)
             {
+                console.log('Refresh is disabled when running in offline mode.');
                 return;
             }
+
+            if (refreshOngoing)
+            {
+                console.log('Already refreshing.');
+                return;
+            }
+
+            refreshOngoing = true;
 
             fetch('/api/process/tree?refresh=true').then( (response) =>
             {
@@ -243,6 +254,9 @@ export const processStore = defineStore(
                 {
                     console.log('Failed to retrieve process tree from server.');
                 }
+            }).finally(() =>
+            {
+                refreshOngoing = false;
             });
         },
 
