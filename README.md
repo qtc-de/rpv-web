@@ -35,7 +35,7 @@ can run the following commands to build *rpv-web*:
 
 ```console
 [user@host ~]$ v install qtc_de.rpv
-[user@host ~]$ https://github.com/qtc-de/rpv-web
+[user@host ~]$ git clone https://github.com/qtc-de/rpv-web
 [user@host ~]$ cd rpv-web
 [user@host rpv-web]$ make
 ```
