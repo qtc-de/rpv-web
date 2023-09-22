@@ -1,0 +1,24 @@
+ID ICON "rpv-web.ico"
+1 VERSIONINFO
+FILEVERSION     <FILEVERSION>, 0
+PRODUCTVERSION  <FILEVERSION>, 0
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904B0"
+    BEGIN
+      VALUE "CompanyName", "Tobias Neitzel"
+      VALUE "FileDescription", "rpv-web server executable"
+      VALUE "FileVersion", "<VERSION>"
+      VALUE "InternalName", "rpv-web"
+      VALUE "LegalCopyright", "Copyright 2023 © Tobias Neitzel"
+      VALUE "OriginalFilename", "rpv-web.exe"
+      VALUE "ProductName", "rpv-web"
+      VALUE "ProductVersion", "<VERSION>"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x409, 1200
+  END
+END
