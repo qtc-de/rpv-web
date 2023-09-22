@@ -1,6 +1,7 @@
 name: Build rpv-web
 
 on:
+  pull_request:
   push:
     branches:
       - main
@@ -21,8 +22,6 @@ jobs:
 
       - name: Install V
         uses: vlang/setup-v@v1.3
-        with:
-          version: '0.4'
 
       - name: Install mingw
         run: |
@@ -48,8 +47,6 @@ jobs:
 
       - name: Install V
         uses: vlang/setup-v@v1.3
-        with:
-          version: '0.4'
 
       - name: Install mingw
         run: |
