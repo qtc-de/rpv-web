@@ -1,4 +1,4 @@
-Options := -os windows -prod -enable-globals -cflags $(realpath resources/rpv-web.res)
+Options := -os windows -prod -enable-globals -cflags $(shell pwd)/resources/rpv-web.res
 DebugOptions := ${Options} -d debug
 Resources := resources/rpv-web.rc resources/rpv-web.res
 
