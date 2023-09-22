@@ -1,22 +1,26 @@
-Options := -os windows -prod -enable-globals -cflags $(shell pwd)/resources/rpv-web.res
+RC := resources/rpv-web.rc
+RES := resources/rpv-web.res
+Options := -os windows -prod -enable-globals -cflags $(shell pwd)/${RES}
 DebugOptions := ${Options} -d debug
-Resources := resources/rpv-web.rc resources/rpv-web.res
 
-rpv-web-x64 x64: ${Resources}
+rpv-web-x64 x64: ${RC}
+	x86_64-w64-mingw32-windres ${RC} -O coff -o ${RES}
 	v ${Options} . -o ${@}.exe
 
-rpv-web-x64-debug debug: ${Resources}
+rpv-web-x64-debug debug: ${RC}
+	x86_64-w64-mingw32-windres ${RC} -O coff -o ${RES}
 	v ${DebugOptions} . -o ${@}.exe
 
-rpv-web-x86 x86: ${Resources}
+rpv-web-x86 x86: ${RC}
+	i686-w64-mingw32-windres ${RC} -O coff -o ${RES}
 	v -m32 ${Options} . -o ${@}.exe
 
-rpv-web-x86-debug x86-debug: ${Resources}
+rpv-web-x86-debug x86-debug: ${RC}
+	i686-w64-mingw32-windres ${RC} -O coff -o ${RES}
 	v -m32 ${DebugOptions} . -o ${@}.exe
 
 resources/rpv-web.rc:
-	bash resources/adjust.sh
-	x86_64-w64-mingw32-windres resources/rpv-web.rc -O coff -o resources/rpv-web.res
+	bash resources/adjust.sh > ${RC}
 
 clean:
-	rm -f *.exe ${Resources}
+	rm -f *.exe ${RC} ${RES}
