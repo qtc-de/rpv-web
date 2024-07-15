@@ -149,7 +149,7 @@
     <table class="ml-1 mt-2 InterfaceDetailedTable" v-if="selectedTab == 'Security'">
         <tr>
             <td>Security Callback</td>
-            <td v-if="selectedInterface">{{ selectedInterface.sec_callback.base }}</td>
+            <td v-if="selectedInterface">{{ selectedInterface.sec_callback.addr }}</td>
         </tr>
         <tr>
             <td>Callback Name</td>
@@ -160,6 +160,10 @@
         <tr>
             <td>Module</td>
             <td v-if="selectedInterface">{{ selectedInterface.sec_callback.location }}</td>
+        </tr>
+        <tr>
+            <td>Offset</td>
+            <td v-if="selectedInterface">{{ selectedInterface.sec_callback.offset }}</td>
         </tr>
         <tr>
             <td>Description</td>
