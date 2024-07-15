@@ -14,7 +14,7 @@ import qtc_de.rpv.win
 // The structure also contains the original rpv.RpcInfo struct in case one needs
 // access to more detailed RPC data. However, this structure is excluded from
 // the json output.
-[heap]
+@[heap]
 struct RpvWebProcessInformation {
 	pub:
 	pid		u32
@@ -35,7 +35,7 @@ struct RpvWebProcessInformation {
 // RpcWebInfo is the rpv-web version of RpcInfo. All fields from the corresponding
 // rpv type are replaced with rpv-web versions except of rpc_type which contains
 // the original rpv.RpcType value.
-[heap]
+@[heap]
 struct RpcWebInfo {
 	pub:
 	server_info RpcWebServerInfo
@@ -46,7 +46,7 @@ struct RpcWebInfo {
 // RpcWebServerInfo is the rpv-web version of RpcServerInfo. Fields contained in
 // this structure were reduced to the one that are displayed within the graphical
 // user interface. Binary types like pointers were converted to strings.
-[heap]
+@[heap]
 struct RpcWebServerInfo {
 	pub:
 	base string
@@ -62,7 +62,7 @@ struct RpcWebServerInfo {
 // RpcWebInterfaceInfo is the rpv-web version of RpcInterfaceInfo. Fields contained in
 // this structure were reduced to the one that are displayed within the graphical
 // user interface. Binary types like pointers were converted to strings.
-[heap]
+@[heap]
 struct RpcWebInterfaceInfo {
 	pub:
 	id string
@@ -85,7 +85,7 @@ struct RpcWebInterfaceInfo {
 // RpcWebMethod is the rpv-web version of rpv.RpcMethod. Fields contained in
 // this structure were reduced to the one that are displayed within the graphical
 // user interface.
-[heap]
+@[heap]
 struct RpcWebMethod {
 	base string
 	fmt string
@@ -97,7 +97,7 @@ struct RpcWebMethod {
 // RpcWebAuthInfo is the rpv-web version of RpcAuthInfo. Fields contained in
 // this structure were reduced to the one that are displayed within the graphical
 // user interface.
-[heap]
+@[heap]
 struct RpcWebAuthInfo {
 	principal string
 	name string
@@ -107,7 +107,7 @@ struct RpcWebAuthInfo {
 // WebNdrInfo is the rpv-web version of NdrInfo. Fields contained in
 // this structure were reduced to the one that are displayed within the graphical
 // user interface.
-[heap]
+@[heap]
 struct WebNdrInfo {
 	ndr_version u32
 	midl_version u32
@@ -118,7 +118,7 @@ struct WebNdrInfo {
 // WebSecurityCallback is the rpv-web version of SecurityCallback. Fields contained in
 // this structure were reduced to the one that are displayed within the graphical
 // user interface.
-[heap]
+@[heap]
 struct WebSecurityCallback {
 	base string
 	location string
@@ -130,7 +130,7 @@ struct WebSecurityCallback {
 // WebIdlInterface is the rpv-web version of MidlInterface. Fields contained in
 // this structure were reduced to the one that are displayed within the graphical
 // user interface.
-[heap]
+@[heap]
 struct WebIdlInterface {
 	id string
 	name string
