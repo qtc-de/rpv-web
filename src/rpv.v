@@ -28,7 +28,7 @@ struct RpvWebProcessInformation {
 	desc	string
 	rpc_info RpcWebInfo
 	mut:
-	rpv_info rpv.RpvProcessInformation [skip]
+	rpv_info rpv.RpvProcessInformation @[skip]
 	childs  []RpvWebProcessInformation
 }
 
