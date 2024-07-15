@@ -14,7 +14,7 @@ struct WebSnapshot {
 // WebSnapshot struct within the response. This struct represents a full mirror
 // of the currently available RPC data and can be later imported back within
 // the frontend.
-['/api/snapshot'; get]
+@['/api/snapshot'; get]
 pub fn (mut app App) create_snapshot() vweb.Result
 {
 	if g_processes.len == 0 || app.query['refresh'] == 'true'

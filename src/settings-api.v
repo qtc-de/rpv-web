@@ -4,14 +4,14 @@ import vweb
 import x.json2
 
 // get_settings returns the currently configured rpv-web settings.
-['/api/settings'; get]
+@['/api/settings'; get]
 pub fn (mut app App) get_settings() vweb.Result
 {
 	return app.json(g_settings)
 }
 
 // set_settings updates the rpv-web settings.
-['/api/settings'; post]
+@['/api/settings'; post]
 pub fn (mut app App) set_settings() vweb.Result
 {
 	if json_body := json2.raw_decode(app.req.data)

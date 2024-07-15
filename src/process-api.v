@@ -73,7 +73,7 @@ fn (mut app App) refresh()!
 }
 
 // process_refresh can be used to manually trigger a refresh of the cached RPC information.
-['/api/process/refresh'; get]
+@['/api/process/refresh'; get]
 pub fn (mut app App) process_refresh() vweb.Result
 {
 	app.refresh() or {
@@ -88,7 +88,7 @@ pub fn (mut app App) process_refresh() vweb.Result
 // Callers can use the `refresh=true` query parameter to enforce a refresh of RPC data.
 // The list returned by this API endpoint is flat and does not contain parent-child
 // relationships between the different processes.
-['/api/process/all'; get]
+@['/api/process/all'; get]
 pub fn (mut app App) process_all() vweb.Result
 {
 	if g_processes.len == 0 || app.query['refresh'] == 'true' {
@@ -107,7 +107,7 @@ pub fn (mut app App) process_all() vweb.Result
 // The difference to process_all is that the `childs` field of the returned processes
 // is populated. Processes listed as child process are no longer contained within the
 // toplevel of the tree.
-['/api/process/tree'; get]
+@['/api/process/tree'; get]
 pub fn (mut app App) process_tree() vweb.Result
 {
 	if g_processes.len == 0 || app.query['refresh'] == 'true'
@@ -144,7 +144,7 @@ pub fn (mut app App) process_tree() vweb.Result
 // process_pid returns an RpvWebProcessInformation that belongs to the requested pid.
 // If the target PID does not exist on the system, a 404 error is returned. 
 // Callers can use the `refresh=true` query parameter to enforce a refresh of RPC data.
-['/api/process/:pid'; get]
+@['/api/process/:pid'; get]
 pub fn (mut app App) process_pid(pid u32) vweb.Result
 {
 	if g_processes.len == 0 || app.query['refresh'] == 'true'
@@ -167,7 +167,7 @@ pub fn (mut app App) process_pid(pid u32) vweb.Result
 // process_interface returns an RpvWebInterfaceInfo that belongs to the requested pid.
 // Callers have to specify the interface uuid of the interface they want to obtain.
 // Callers can use the `refresh=true` query parameter to enforce a refresh of RPC data.
-['/api/process/:pid/:uuid'; get]
+@['/api/process/:pid/:uuid'; get]
 pub fn (mut app App) process_interface(pid u32, uuid string) vweb.Result
 {
 	if g_processes.len == 0 || app.query['refresh'] == 'true'
@@ -190,7 +190,7 @@ pub fn (mut app App) process_interface(pid u32, uuid string) vweb.Result
 // decompile_interface allows callers to decompile the specified RPC interface.
 // The interface needs to be specified by it's uuid and the associated pid has
 // also to be supplied.
-['/api/process/:pid/:uuid/decompile'; get]
+@['/api/process/:pid/:uuid/decompile'; get]
 pub fn (mut app App) decompile_interface(pid u32, uuid string) vweb.Result
 {
 	mut intf := get_rpv_interface(pid, uuid) or {
