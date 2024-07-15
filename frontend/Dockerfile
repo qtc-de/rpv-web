@@ -1,4 +1,7 @@
-FROM node:lts-alpine
+###########################################
+###             Build Stage             ###
+###########################################
+FROM node:lts-alpine AS frontend-builder
 
 WORKDIR /app
 COPY package*.json .
@@ -13,7 +16,10 @@ COPY . .
 RUN chown -R rpv:rpv /app                         \
  && su rpv -c "npm run build"
 
-USER rpv:rpv
-EXPOSE 5173
 
-CMD ["npm", "run", "dev", "--", "--host"]
+###########################################
+###            Deploy Stage             ###
+###########################################
+FROM nginx:alpine-slim
+
+COPY --from=frontend-builder /app/dist/. /usr/share/nginx/html
