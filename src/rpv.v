@@ -87,7 +87,8 @@ struct RpcWebInterfaceInfo {
 // user interface.
 @[heap]
 struct RpcWebMethod {
-	base string
+	addr string
+	offset string
 	fmt string
 	mut:
 	name string
@@ -120,7 +121,8 @@ struct WebNdrInfo {
 // user interface.
 @[heap]
 struct WebSecurityCallback {
-	base string
+	addr string
+	offset string
 	location string
 	description string
 	mut:
@@ -287,7 +289,8 @@ fn convert_rpv_rpc_methods(intf_id string, methods []rpv.RpcMethod) []RpcWebMeth
 
 	for method in methods {
 		web_methods << RpcWebMethod {
-			base: '0x${method.base.hex_full()}'
+			addr: '0x${method.addr.hex_full()}'
+			offset: '0x${method.offset.hex_full()}'
 			fmt: '0x${method.fmt.hex_full()}'
 			name: method.name
 			notes: g_symbol_resolver.load_uuid_method_notes(intf_id, index.str()) or { '' }
@@ -303,7 +306,8 @@ fn convert_rpv_rpc_methods(intf_id string, methods []rpv.RpcMethod) []RpcWebMeth
 fn convert_rpv_security_callback(callback rpv.SecurityCallback) WebSecurityCallback
 {
 	return WebSecurityCallback {
-		base: '0x${callback.base.hex_full()}'
+		addr: '0x${callback.addr.hex_full()}'
+		offset: '0x${callback.offset.hex_full()}'
 		name: callback.name
 		location: callback.location.path
 		description: callback.location.desc
