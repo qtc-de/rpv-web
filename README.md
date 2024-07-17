@@ -5,7 +5,7 @@
 
 [![](https://github.com/qtc-de/rpv-web/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/qtc-de/rpv-web/actions/workflows/build.yml)
 [![](https://github.com/qtc-de/rpv-web/actions/workflows/build.yml/badge.svg?branch=dev)](https://github.com/qtc-de/rpv-web/actions/workflows/build.yml)
-[![](https://img.shields.io/badge/version-1.1.0-blue)](https://github.com/qtc-de/rpv-web/releases)
+[![](https://img.shields.io/badge/version-1.2.0-blue)](https://github.com/qtc-de/rpv-web/releases)
 [![](https://img.shields.io/badge/language-v%20%26%20vue-blue)](https://vlang.io/)
 [![](https://img.shields.io/badge/license-GPL%20v3.0-blue)](https://github.com/qtc-de/rpv-web/blob/master/LICENSE)
 [![](https://img.shields.io/badge/Pages-fa6b05)](https://qtc-de.github.io/rpv-web/)
@@ -34,7 +34,7 @@ If you want to build from source, you can do so. Assuming that *v* is installed,
 can run the following commands to build *rpv-web*:
 
 ```console
-[user@host ~]$ v install qtc_de.rpv
+[user@host ~]$ v install qtc-de.rpv
 [user@host ~]$ git clone https://github.com/qtc-de/rpv-web
 [user@host ~]$ cd rpv-web
 [user@host rpv-web]$ make
