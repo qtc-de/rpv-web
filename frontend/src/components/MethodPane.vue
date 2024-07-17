@@ -22,13 +22,13 @@
 
         methods:
         {
-            enableEditing(base, ref, value)
+            enableEditing(addr, ref, value)
             {
-                this[`edit${ref}`] = base;
+                this[`edit${ref}`] = addr;
 
                 this.$nextTick(() => {
-                    this.$refs[`${base}${ref}`][0].value = value;
-                    this.$refs[`${base}${ref}`][0].focus();
+                    this.$refs[`${addr}${ref}`][0].value = value;
+                    this.$refs[`${addr}${ref}`][0].focus();
                 });
             },
 
@@ -39,7 +39,7 @@
 
                 let method = this.selectedInterface.methods[index];
 
-                this.store.addMethodName(methodName, method.base, this.selectedInterface.location)
+                this.store.addMethodName(methodName, method.addr, this.selectedInterface.location)
                 method.name = methodName;
             },
 
@@ -62,19 +62,21 @@
             <tr>
                 <th>Id</th>
                 <th>Name</th>
-                <th>Base Address</th>
+                <th>Address</th>
+                <th>Offset</th>
                 <th>Notes</th>
                 <th>Format Address</th>
             </tr>
             <tr style="cursor: pointer" v-if="selectedInterface" v-for="(method, index) in selectedInterface.methods" @click="selectedMethod = method"
                 :class="{ Selected: selectedMethod == method }">
                 <td>{{ index }}</td>
-                <td v-if="selectedInterface && editMethod != method.base" @dblclick="enableEditing(method.base, 'Method', method.name)">{{ method.name }}</td>
-                <td v-if="selectedInterface && editMethod == method.base"><input :ref="method.base + 'Method'" class="DynamicInput" v-on:keyup.enter="changeMethodName($event, index)"
+                <td v-if="selectedInterface && editMethod != method.addr" @dblclick="enableEditing(method.addr, 'Method', method.name)">{{ method.name }}</td>
+                <td v-if="selectedInterface && editMethod == method.addr"><input :ref="method.addr + 'Method'" class="DynamicInput" v-on:keyup.enter="changeMethodName($event, index)"
                 v-on:blur="changeMethodName($event, index)"/></td>
-                <td>{{ method.base }}</td>
-                <td v-if="selectedInterface && editNotes != method.base" @dblclick="enableEditing(method.base, 'Notes', method.notes)">{{ method.notes }}</td>
-                <td v-if="selectedInterface && editNotes == method.base"><input :ref="method.base + 'Notes'" class="DynamicInput" v-on:keyup.enter="saveNotes($event, index)"
+                <td>{{ method.addr }}</td>
+                <td>{{ method.offset }}</td>
+                <td v-if="selectedInterface && editNotes != method.addr" @dblclick="enableEditing(method.addr, 'Notes', method.notes)">{{ method.notes }}</td>
+                <td v-if="selectedInterface && editNotes == method.addr"><input :ref="method.addr + 'Notes'" class="DynamicInput" v-on:keyup.enter="saveNotes($event, index)"
                 v-on:blur="saveNotes($event, index)"/></td>
                 <td>{{ method.fmt }}</td>
             </tr>

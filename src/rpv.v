@@ -14,7 +14,7 @@ import qtc_de.rpv.win
 // The structure also contains the original rpv.RpcInfo struct in case one needs
 // access to more detailed RPC data. However, this structure is excluded from
 // the json output.
-[heap]
+@[heap]
 struct RpvWebProcessInformation {
 	pub:
 	pid		u32
@@ -28,14 +28,14 @@ struct RpvWebProcessInformation {
 	desc	string
 	rpc_info RpcWebInfo
 	mut:
-	rpv_info rpv.RpvProcessInformation [skip]
+	rpv_info rpv.RpvProcessInformation @[skip]
 	childs  []RpvWebProcessInformation
 }
 
 // RpcWebInfo is the rpv-web version of RpcInfo. All fields from the corresponding
 // rpv type are replaced with rpv-web versions except of rpc_type which contains
 // the original rpv.RpcType value.
-[heap]
+@[heap]
 struct RpcWebInfo {
 	pub:
 	server_info RpcWebServerInfo
@@ -46,7 +46,7 @@ struct RpcWebInfo {
 // RpcWebServerInfo is the rpv-web version of RpcServerInfo. Fields contained in
 // this structure were reduced to the one that are displayed within the graphical
 // user interface. Binary types like pointers were converted to strings.
-[heap]
+@[heap]
 struct RpcWebServerInfo {
 	pub:
 	base string
@@ -62,7 +62,7 @@ struct RpcWebServerInfo {
 // RpcWebInterfaceInfo is the rpv-web version of RpcInterfaceInfo. Fields contained in
 // this structure were reduced to the one that are displayed within the graphical
 // user interface. Binary types like pointers were converted to strings.
-[heap]
+@[heap]
 struct RpcWebInterfaceInfo {
 	pub:
 	id string
@@ -85,9 +85,10 @@ struct RpcWebInterfaceInfo {
 // RpcWebMethod is the rpv-web version of rpv.RpcMethod. Fields contained in
 // this structure were reduced to the one that are displayed within the graphical
 // user interface.
-[heap]
+@[heap]
 struct RpcWebMethod {
-	base string
+	addr string
+	offset string
 	fmt string
 	mut:
 	name string
@@ -97,7 +98,7 @@ struct RpcWebMethod {
 // RpcWebAuthInfo is the rpv-web version of RpcAuthInfo. Fields contained in
 // this structure were reduced to the one that are displayed within the graphical
 // user interface.
-[heap]
+@[heap]
 struct RpcWebAuthInfo {
 	principal string
 	name string
@@ -107,7 +108,7 @@ struct RpcWebAuthInfo {
 // WebNdrInfo is the rpv-web version of NdrInfo. Fields contained in
 // this structure were reduced to the one that are displayed within the graphical
 // user interface.
-[heap]
+@[heap]
 struct WebNdrInfo {
 	ndr_version u32
 	midl_version u32
@@ -118,9 +119,10 @@ struct WebNdrInfo {
 // WebSecurityCallback is the rpv-web version of SecurityCallback. Fields contained in
 // this structure were reduced to the one that are displayed within the graphical
 // user interface.
-[heap]
+@[heap]
 struct WebSecurityCallback {
-	base string
+	addr string
+	offset string
 	location string
 	description string
 	mut:
@@ -130,7 +132,7 @@ struct WebSecurityCallback {
 // WebIdlInterface is the rpv-web version of MidlInterface. Fields contained in
 // this structure were reduced to the one that are displayed within the graphical
 // user interface.
-[heap]
+@[heap]
 struct WebIdlInterface {
 	id string
 	name string
@@ -287,7 +289,8 @@ fn convert_rpv_rpc_methods(intf_id string, methods []rpv.RpcMethod) []RpcWebMeth
 
 	for method in methods {
 		web_methods << RpcWebMethod {
-			base: '0x${method.base.hex_full()}'
+			addr: '0x${method.addr.hex_full()}'
+			offset: '0x${method.offset.hex_full()}'
 			fmt: '0x${method.fmt.hex_full()}'
 			name: method.name
 			notes: g_symbol_resolver.load_uuid_method_notes(intf_id, index.str()) or { '' }
@@ -303,7 +306,8 @@ fn convert_rpv_rpc_methods(intf_id string, methods []rpv.RpcMethod) []RpcWebMeth
 fn convert_rpv_security_callback(callback rpv.SecurityCallback) WebSecurityCallback
 {
 	return WebSecurityCallback {
-		base: '0x${callback.base.hex_full()}'
+		addr: '0x${callback.addr.hex_full()}'
+		offset: '0x${callback.offset.hex_full()}'
 		name: callback.name
 		location: callback.location.path
 		description: callback.location.desc

@@ -7,7 +7,7 @@ import qtc_de.rpv
 
 // update_symbols allows callers to merge an rpv-web symbol file with
 // the symbol file that is currently used by the server.
-['/api/symbols'; post]
+@['/api/symbols'; post]
 pub fn (mut app App) update_symbols() vweb.Result
 {
 	if json_body := json2.raw_decode(app.req.data)
