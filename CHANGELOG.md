@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 * Fix `-pdb-path` not working with `-snapshot`
+* Updated GitHub actions in workflow files
 
 
 ## v1.2.0 - July 17, 2024
