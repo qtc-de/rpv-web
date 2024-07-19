@@ -18,10 +18,10 @@ jobs:
 
     steps:
       - name: Checkout ${{ github.event.repository.name }}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install V
-        uses: vlang/setup-v@v1.3
+        uses: vlang/setup-v@v1.4
 
       - name: Install mingw
         run: |
@@ -33,7 +33,7 @@ jobs:
           make
 
       - name: Archive rpv-web-x64
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: rpv-web-x64
           path: rpv-web-x64.exe
@@ -43,10 +43,10 @@ jobs:
 
     steps:
       - name: Checkout ${{ github.event.repository.name }}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install V
-        uses: vlang/setup-v@v1.3
+        uses: vlang/setup-v@v1.4
 
       - name: Install mingw
         run: |
@@ -59,7 +59,7 @@ jobs:
           make rpv-web-x86
 
       - name: Archive rpv-web-x86
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: rpv-web-x86
           path: rpv-web-x86.exe
@@ -72,10 +72,10 @@ jobs:
 
     steps:
       - name: Checkout ${{ github.event.repository.name }}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '20.x'
 
@@ -87,17 +87,17 @@ jobs:
           mv dist ../dist
 
       - name: Download rpv-web-x64
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: rpv-web-x64
 
       - name: Download rpv-web-x86
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: rpv-web-x86
 
       - name: Archive frontend and rpv-web
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: rpv-web
           path: |
