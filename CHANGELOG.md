@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## v1.X.X - July XX, 2024
+
+### Changed
+
+* Fix `-pdb-path` not working with `-snapshot`
+
+
 ## v1.2.0 - July 17, 2024
 
 ### Added
