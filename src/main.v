@@ -51,6 +51,15 @@ fn main()
 		execute: fn [mut app] (cmd cli.Command)!
 		{
 			snapshot := cmd.flags.get_bool('snapshot') or { false }
+			symbol_file := cmd.flags.get_string('symbol-file') or { 'rpv-web-symbols.toml' }
+			pdb_path := cmd.flags.get_string('pdb-path') or { '' }
+
+			g_settings = RpvWebSettings { symbol_file: symbol_file, symbol_path: pdb_path }
+			g_symbol_resolver = rpv.new_resolver(g_settings.symbol_file, g_settings.symbol_path) or
+			{
+				eprintln('[-] Unable to initialize global symbol resolver: ${err}')
+				return
+			}
 
 			if snapshot
 			{
@@ -72,22 +81,13 @@ fn main()
 				{
 					eprintln('[-] Unable to write file ${filename}.')
 				}
-
-				return
 			}
 
-			symbol_file := cmd.flags.get_string('symbol-file') or { 'rpv-web-symbols.toml' }
-			pdb_path := cmd.flags.get_string('pdb-path') or { '' }
-
-			g_settings = RpvWebSettings { symbol_file: symbol_file, symbol_path: pdb_path }
-			g_symbol_resolver = rpv.new_resolver(g_settings.symbol_file, g_settings.symbol_path) or
+			else
 			{
-				eprintln('[-] Unable to initialize global symbol resolver: ${err}')
-				return
+				port := cmd.flags.get_int('port') or { 8000 }
+				vweb.run(app, port)
 			}
-
-			port := cmd.flags.get_int('port') or { 8000 }
-			vweb.run(app, port)
 		}
 	}
 
