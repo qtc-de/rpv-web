@@ -16,11 +16,12 @@
         setup()
         {
             const store = processStore();
-            const { selectedProcess, selectedInterface } = storeToRefs(store);
-            return { store, selectedProcess, selectedInterface }
+            const { interfaceFilter, selectedProcess, selectedInterface } = storeToRefs(store);
+            return { store, interfaceFilter, selectedProcess, selectedInterface }
         },
 
-        components: {
+        components:
+        {
             VueSimpleContextMenu,
         },
 
@@ -29,6 +30,33 @@
             selectRow(intf)
             {
                 this.selectedInterface = intf;
+            },
+
+            applyFilter(filter, intf)
+            {
+                if (!filter)
+                {
+                    return true;
+                }
+
+                filter = filter.toLowerCase();
+
+                if (!filter.includes(':'))
+                {
+                    let inverse = false;
+
+                    if (filter.startsWith('!'))
+                    {
+                        filter = filter.substring(1);
+                        inverse = true;
+                    }
+
+                    return (intf.uuid.toLowerCase().includes(filter) || intf.location.toLowerCase().includes(filter) ||
+                            intf.decs.toLowerCase().includes(filter) || intf.name.toLowerCase().includes(filter) ||
+                            intf.annotation.toLowerCase().includes(filter)) != inverse;
+                }
+
+                return true;
             },
 
             interfaceClick(e, item)
@@ -63,6 +91,9 @@
 
 <template>
     <h3 class="ml-2">RPC Interfaces</h3>
+
+    <input v-model="interfaceFilter" class="form-control mb-1" style="width: 95%" placeholder="filter: (<str> | type:<str> | uuid:<str> | location:<str> | desc:<str> | name:<str> | flags:<str> | annotation:<str> | epregistered:<str> | ...)"/>
+
     <aside id="InterfacePane" class="SmallBorder">
         <table class="GenericTable">
             <tr>
@@ -75,7 +106,7 @@
                 <th class="InterfaceColumn">Annotation</th>
                 <th class="InterfaceColumn">EpRegistred</th>
             </tr>
-            <tr v-if="selectedProcess" v-for="intf in selectedProcess.rpc_info.interface_infos" @contextmenu.prevent.stop="interfaceClick($event, intf)"
+            <tr v-if="selectedProcess && applyFilter(interfaceFilter, intf)" v-for="intf in selectedProcess.rpc_info.interface_infos" @contextmenu.prevent.stop="interfaceClick($event, intf)"
                 :class="{ Selected: (selectedInterface && selectedInterface.id == intf.id), Rpc: intf.typ == 'rpc',
                           Dcom: intf.typ == 'dcom', Hybrid: intf.typ == 'hybrid' }" @click='selectRow(intf)'>
                 <td class="InterfaceColumn">{{ intf.typ.toUpperCase() }}</td>

@@ -12,7 +12,9 @@ var refreshOngoing = false;
 var selectedPane = null;
 var selectedProcess = null;
 var selectedInterface = null;
+
 var processFilter = null;
+var interfaceFilter = null;
 
 export const processStore = defineStore(
 {
@@ -29,6 +31,7 @@ export const processStore = defineStore(
         selectedProcess,
         selectedInterface,
         processFilter,
+        interfaceFilter,
     }),
 
     actions:
