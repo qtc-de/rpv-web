@@ -38,8 +38,16 @@
 
                 if (!filter.includes(':'))
                 {
-                    return process.path.toLowerCase().includes(filter) || process.cmdline.toLowerCase().includes(filter) ||
-                           process.user.toLowerCase().includes(filter) || process.pid == filter;
+                    let inverse = false;
+
+                    if (filter.startsWith('!'))
+                    {
+                        filter = filter.substring(1);
+                        inverse = true;
+                    }
+
+                    return (process.path.toLowerCase().includes(filter) || process.cmdline.toLowerCase().includes(filter) ||
+                           process.user.toLowerCase().includes(filter) || process.pid == filter) != inverse;
                 }
 
                 let result = true;
@@ -48,6 +56,8 @@
                 for (const entry of filterArray)
                 {
                     let key, value;
+                    let inverse = false;
+
                     [key, value] = entry.split(':', 2);
 
                     if (value === undefined)
@@ -58,7 +68,13 @@
                         continue;
                     }
 
-                    else if (key === 'uuid' || key === 'id' || key == 'location')
+                    if (value.startsWith('!'))
+                    {
+                        value = value.substring(1);
+                        inverse = true;
+                    }
+
+                    if (key === 'uuid' || key === 'id' || key == 'location')
                     {
                         let found = false;
 
@@ -69,14 +85,13 @@
 
                         for (const intf of process.rpc_info.interface_infos)
                         {
-                            if (String(intf[key]).toLowerCase().includes(value))
+                            if (String(intf[key]).toLowerCase().includes(value) != inverse)
                             {
                                 found = true
                             }
                         }
 
                         result = result && found;
-                        continue;
                     }
 
                     else if (key === 'endpoint')
@@ -85,17 +100,39 @@
 
                         for (const endpoint of process.rpc_info.server_info.endpoints)
                         {
-                            if (endpoint.name.toLowerCase().includes(value))
+                            const mergedEndpoint = `${endpoint.protocol}:${endpoint.name}`;
+
+                            if (mergedEndpoint.toLowerCase().includes(value) != inverse)
                             {
                                 found = true
                             }
                         }
 
                         result = result && found;
-                        continue;
                     }
 
-                    result = result && (Object.hasOwn(process, key) && String(process[key]).toLowerCase().includes(value));
+                    else if (key === 'flags')
+                    {
+                        let found = false;
+
+                        for (const intf of process.rpc_info.interface_infos)
+                        {
+                            for (const flag of intf.flags)
+                            {
+                                if (flag.toLowerCase().includes(value) != inverse)
+                                {
+                                    found = true
+                                }
+                            }
+                        }
+
+                        result = result && found;
+                    }
+
+                    else
+                    {
+                        result = result && (Object.hasOwn(process, key) && String(process[key]).toLowerCase().includes(value) != inverse);
+                    }
                 }
 
                 return result;
