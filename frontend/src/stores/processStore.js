@@ -12,6 +12,7 @@ var refreshOngoing = false;
 var selectedPane = null;
 var selectedProcess = null;
 var selectedInterface = null;
+var processFilter = null;
 
 export const processStore = defineStore(
 {
@@ -27,6 +28,7 @@ export const processStore = defineStore(
         refreshOngoing,
         selectedProcess,
         selectedInterface,
+        processFilter,
     }),
 
     actions:

@@ -1,19 +1,24 @@
 <script>
+    import { storeToRefs } from 'pinia'
+    import { processStore } from '@/stores/processStore.js'
+
     import ProcessTableRow from './ProcessTableRow.vue'
 
     export default
     {
         props: ['processTree'],
 
-        components: {
+        components:
+        {
             ProcessTableRow,
         },
 
-        data()
+        setup()
         {
-            return {
-                processFilter: null,
-            }
+            const store = processStore();
+            const { processFilter } = storeToRefs(store);
+
+            return { processFilter }
         },
 
         methods:
