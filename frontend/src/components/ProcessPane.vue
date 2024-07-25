@@ -117,7 +117,13 @@
                     this.selectedTab = new_name;
                 }
 
+                if (tab.oldName === undefined)
+                {
+                    tab.oldName = tab.name;
+                }
+
                 tab.name = new_name;
+
                 this.editTab = null;
             },
 

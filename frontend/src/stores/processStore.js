@@ -40,7 +40,7 @@ export const processStore = defineStore(
         {
             for (const tab of this.tabs)
             {
-                if (tab.name == name)
+                if (tab.name === name || tab.oldName === name)
                 {
                     return true;
                 }
