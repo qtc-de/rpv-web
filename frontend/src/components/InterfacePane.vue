@@ -180,6 +180,7 @@
             <tr>
                 <th class="InterfaceColumn">Type</th>
                 <th class="InterfaceColumn">UUID</th>
+                <th class="InterfaceColumn">Version</th>
                 <th class="InterfaceColumn">Location</th>
                 <th class="InterfaceColumn">Procs</th>
                 <th class="InterfaceColumn">Desc</th>
@@ -192,6 +193,7 @@
                           Dcom: intf.typ == 'dcom', Hybrid: intf.typ == 'hybrid' }" @click='selectRow(intf)'>
                 <td class="InterfaceColumn">{{ intf.typ.toUpperCase() }}</td>
                 <td class="InterfaceColumn">{{ intf.id }}</td>
+                <td class="InterfaceColumn">{{ intf.version }}</td>
                 <td class="InterfaceColumn">{{ intf.location }}</td>
                 <td class="InterfaceColumn">{{ intf.methods.length }}</td>
                 <td class="InterfaceColumn">{{ intf.description }}</td>
