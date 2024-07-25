@@ -12,6 +12,7 @@ var refreshOngoing = false;
 var selectedPane = null;
 var selectedProcess = null;
 var selectedInterface = null;
+var selectedTab = 'Processes';
 
 var processFilter = null;
 var interfaceFilter = null;
@@ -32,6 +33,7 @@ export const processStore = defineStore(
         selectedInterface,
         processFilter,
         interfaceFilter,
+        selectedTab,
     }),
 
     actions:
@@ -40,7 +42,7 @@ export const processStore = defineStore(
         {
             for (const tab of this.tabs)
             {
-                if (tab.name === name || tab.oldName === name)
+                if (tab.name === name || tab.origName === name)
                 {
                     return true;
                 }
@@ -65,6 +67,7 @@ export const processStore = defineStore(
                     'type': 'snapshot',
                     'snapshotId': snapshotID,
                     'name': name,
+                    'origName': name,
                     'data': snapshot
                 }
             );
@@ -130,6 +133,7 @@ export const processStore = defineStore(
                     'type': 'snapshot',
                     'snapshotId': snapshotID,
                     'name': name,
+                    'origName': name,
                     'data': {
                         'processes': processes,
                         'idl_data': {...first.idl_data, ...second.idl_data}
@@ -162,6 +166,7 @@ export const processStore = defineStore(
                                 {
                                     'type': 'idl',
                                     'name': uuid,
+                                    'origName': uuid,
                                     'data': idl.code
                                 });
 
@@ -182,6 +187,7 @@ export const processStore = defineStore(
                         {
                             'type': 'idl',
                             'name': uuid,
+                            'origName': name,
                             'data': decompiled
                         });
                     });
