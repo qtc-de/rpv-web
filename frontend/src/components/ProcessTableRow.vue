@@ -27,115 +27,127 @@
                 this.selectedInterface = null;
             },
 
+            casualFilter(process, filter)
+            {
+                let inverse = false;
+
+                if (filter.startsWith('!'))
+                {
+                    filter = filter.substring(1);
+                    inverse = true;
+                }
+
+                return (process.path.toLowerCase().includes(filter) || process.cmdline.toLowerCase().includes(filter) ||
+                       process.user.toLowerCase().includes(filter) || process.pid == filter) != inverse;
+            },
+
             applyFilter(filter, process)
             {
-                if (!filter)
+                if (filter)
                 {
-                    return true;
-                }
+                    filter = filter.toLowerCase();
 
-                filter = filter.toLowerCase();
-
-                if (!filter.includes(':'))
-                {
-                    let inverse = false;
-
-                    if (filter.startsWith('!'))
+                    if (!filter.includes(':') && !this.casualFilter(process, filter))
                     {
-                        filter = filter.substring(1);
-                        inverse = true;
-                    }
-
-                    return (process.path.toLowerCase().includes(filter) || process.cmdline.toLowerCase().includes(filter) ||
-                           process.user.toLowerCase().includes(filter) || process.pid == filter) != inverse;
-                }
-
-                let result = true;
-                const filterArray = filter.split(/\s*\|\s*/);
-
-                for (const entry of filterArray)
-                {
-                    let key, value;
-                    let inverse = false;
-
-                    [key, value] = entry.split(':', 2);
-
-                    if (value === undefined)
-                    {
-                        key = key.toLowerCase();
-                        result = result && (process.path.toLowerCase().includes(key) || process.cmdline.toLowerCase().includes(key) ||
-                               process.user.toLowerCase().includes(key) || process.pid == key);
-                        continue;
-                    }
-
-                    if (value.startsWith('!'))
-                    {
-                        value = value.substring(1);
-                        inverse = true;
-                    }
-
-                    if (key === 'uuid' || key === 'id' || key == 'location')
-                    {
-                        let found = false;
-
-                        if (key === 'uuid')
-                        {
-                            key = 'id';
-                        }
-
-                        for (const intf of process.rpc_info.interface_infos)
-                        {
-                            if (String(intf[key]).toLowerCase().includes(value) != inverse)
-                            {
-                                found = true
-                            }
-                        }
-
-                        result = result && found;
-                    }
-
-                    else if (key === 'endpoint')
-                    {
-                        let found = false;
-
-                        for (const endpoint of process.rpc_info.server_info.endpoints)
-                        {
-                            const mergedEndpoint = `${endpoint.protocol}:${endpoint.name}`;
-
-                            if (mergedEndpoint.toLowerCase().includes(value) != inverse)
-                            {
-                                found = true
-                            }
-                        }
-
-                        result = result && found;
-                    }
-
-                    else if (key === 'flags')
-                    {
-                        let found = false;
-
-                        for (const intf of process.rpc_info.interface_infos)
-                        {
-                            for (const flag of intf.flags)
-                            {
-                                if (flag.toLowerCase().includes(value) != inverse)
-                                {
-                                    found = true
-                                }
-                            }
-                        }
-
-                        result = result && found;
+                        return false;
                     }
 
                     else
                     {
-                        result = result && (Object.hasOwn(process, key) && String(process[key]).toLowerCase().includes(value) != inverse);
+                        const filterArray = filter.split(/\s*\|\s*/);
+
+                        for (const entry of filterArray)
+                        {
+                            let key, value;
+                            let inverse = false;
+
+                            [key, value] = entry.split(':', 2);
+                            
+                            if (key === 'uuid')
+                            {
+                                key = 'id';
+                            }
+
+                            if (value === undefined)
+                            {
+                                if (!this.casualFilter(process, key))
+                                {
+                                    return false;
+                                }
+
+                                continue;
+                            }
+
+                            if (value.startsWith('!'))
+                            {
+                                value = value.substring(1);
+                                inverse = true;
+                            }
+
+                            let propValue = null;
+
+                            if (Object.hasOwn(process, key))
+                            {
+                                propValue = process[key];
+                            }
+
+                            else if (Object.hasOwn(process.rpc_info.server_info, key))
+                            {
+                                propValue = process.server_info[key];
+                            }
+
+                            else if (process.rpc_info.interface_infos.length > 0)
+                            {
+                                if (Object.hasOwn(process.rpc_info.interface_infos[0], key))
+                                {
+                                    propValue = [];
+
+                                    for (const intf of process.rpc_info.interface_infos)
+                                    {
+                                        propValue.push(intf[key]);
+                                    }
+                                }
+                            }
+
+                            else
+                            {
+                                return false;
+                            }
+
+                            if (propValue !== null)
+                            {
+                                if (Array.isArray(propValue))
+                                {
+                                    let found = false;
+
+                                    for (const item of propValue)
+                                    {
+                                        if (String(item).toLowerCase().includes(value))
+                                        {
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (!found != inverse)
+                                    {
+                                        return false;
+                                    }
+                                }
+
+                                else
+                                {
+                                    if (String(propValue).toLowerCase().includes(value) == inverse)
+                                    {
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
 
-                return result;
+                return true;
             }
         },
     }

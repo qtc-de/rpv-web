@@ -32,31 +32,112 @@
                 this.selectedInterface = intf;
             },
 
-            applyFilter(filter, intf)
+            casualFilter(intf, filter)
             {
-                if (!filter)
+                let inverse = false;
+
+                if (filter.startsWith('!'))
                 {
-                    return true;
+                    filter = filter.substring(1);
+                    inverse = true;
                 }
 
-                filter = filter.toLowerCase();
+                return (intf.id.toLowerCase().includes(filter) || intf.location.toLowerCase().includes(filter) ||
+                        intf.description.toLowerCase().includes(filter) || intf.name.toLowerCase().includes(filter) ||
+                        intf.annotation.toLowerCase().includes(filter)) != inverse;
+            },
 
-                if (!filter.includes(':'))
+            getInterfaces: function*(filter)
+            {
+                for (const intf of this.selectedProcess.rpc_info.interface_infos)
                 {
-                    let inverse = false;
-
-                    if (filter.startsWith('!'))
+                    if (filter)
                     {
-                        filter = filter.substring(1);
-                        inverse = true;
+                        let match = true;
+                        filter = filter.toLowerCase();
+
+                        if (!filter.includes(':') && !this.casualFilter(intf, filter))
+                        {
+                            match = false;
+                        }
+
+                        else
+                        {
+                            const filterArray = filter.split(/\s*\|\s*/);
+
+                            for (const entry of filterArray)
+                            {
+                                let key, value;
+                                let inverse = false;
+
+                                [key, value] = entry.split(':', 2);
+
+                                if (key === 'uuid')
+                                {
+                                    key = 'id';
+                                }
+
+                                if (value === undefined)
+                                {
+                                    if (!this.casualFilter(intf, key))
+                                    {
+                                        match = false;
+                                        break;
+                                    }
+
+                                    continue;
+                                }
+
+                                if (value.startsWith('!'))
+                                {
+                                    value = value.substring(1);
+                                    inverse = true;
+                                }
+
+                                if (Object.hasOwn(intf, key))
+                                {
+                                    const propValue = intf[key];
+
+                                    if (Array.isArray(propValue))
+                                    {
+                                        let found = false;
+
+                                        for (const item of propValue)
+                                        {
+                                            if (String(item).toLowerCase().includes(value))
+                                            {
+                                                found = true;
+                                                break;
+                                            }
+                                        }
+
+                                        if (!found != inverse)
+                                        {
+                                            match = false;
+                                            break;
+                                        }
+                                    }
+
+                                    else
+                                    {
+                                        if (String(propValue).toLowerCase().includes(value) == inverse)
+                                        {
+                                            match = false;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if (!match)
+                        {
+                            continue;
+                        }
                     }
 
-                    return (intf.uuid.toLowerCase().includes(filter) || intf.location.toLowerCase().includes(filter) ||
-                            intf.decs.toLowerCase().includes(filter) || intf.name.toLowerCase().includes(filter) ||
-                            intf.annotation.toLowerCase().includes(filter)) != inverse;
+                    yield intf;
                 }
-
-                return true;
             },
 
             interfaceClick(e, item)
@@ -106,7 +187,7 @@
                 <th class="InterfaceColumn">Annotation</th>
                 <th class="InterfaceColumn">EpRegistred</th>
             </tr>
-            <tr v-if="selectedProcess && applyFilter(interfaceFilter, intf)" v-for="intf in selectedProcess.rpc_info.interface_infos" @contextmenu.prevent.stop="interfaceClick($event, intf)"
+            <tr v-if="selectedProcess" v-for="intf in getInterfaces(interfaceFilter)" @contextmenu.prevent.stop="interfaceClick($event, intf)"
                 :class="{ Selected: (selectedInterface && selectedInterface.id == intf.id), Rpc: intf.typ == 'rpc',
                           Dcom: intf.typ == 'dcom', Hybrid: intf.typ == 'hybrid' }" @click='selectRow(intf)'>
                 <td class="InterfaceColumn">{{ intf.typ.toUpperCase() }}</td>
