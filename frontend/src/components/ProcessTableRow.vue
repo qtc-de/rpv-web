@@ -93,7 +93,19 @@
 
                             else if (Object.hasOwn(process.rpc_info.server_info, key))
                             {
-                                propValue = process.server_info[key];
+                                propValue = process.rpc_info.server_info[key];
+
+                                if (key === 'endpoints')
+                                {
+                                    let mod = [];
+
+                                    for (const endpoint of propValue)
+                                    {
+                                        mod = `${endpoint.protocol}:${endpoint.name}`;
+                                    }
+
+                                    propValue = mod;
+                                }
                             }
 
                             else if (process.rpc_info.interface_infos.length > 0)
