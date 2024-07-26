@@ -107,8 +107,12 @@
                 v-on:blur="changeInterfaceName($event)"/></td>
         </tr>
         <tr>
-            <td>DLL</td>
+            <td>Module</td>
             <td v-if="selectedInterface">{{ selectedInterface.location }}</td>
+        </tr>
+        <tr>
+            <td>Module Base</td>
+            <td v-if="selectedInterface">{{ selectedInterface.module_base }}</td>
         </tr>
         <tr>
             <td>Description</td>

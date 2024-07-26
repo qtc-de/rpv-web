@@ -71,6 +71,7 @@ struct RpcWebInterfaceInfo {
 	dispatch_table_addr string
 	annotation string
 	location string
+	module_base string
 	description string
 	ep_registered bool
 	ndr_info WebNdrInfo
@@ -244,6 +245,7 @@ fn convert_rpv_interface_infos(infos []rpv.RpcInterfaceInfo) []RpcWebInterfaceIn
 			dispatch_table_addr: '0x${info.dispatch_table_addr.hex_full()}'
 			annotation: info.annotation
 			location: info.location.path
+			module_base: '0x${info.location.base.hex_full()}'
 			description: info.location.desc
 			ep_registered: info.ep_registered
 			sec_callback: convert_rpv_security_callback(info.sec_callback)
