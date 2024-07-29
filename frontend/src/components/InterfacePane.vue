@@ -173,7 +173,7 @@
 <template>
     <h3 class="ml-2">RPC Interfaces</h3>
 
-    <input v-model="interfaceFilter" class="form-control mb-1" style="width: 95%" placeholder="filter: (<str> | type:<str> | uuid:<str> | location:<str> | desc:<str> | name:<str> | flags:<str> | annotation:<str> | epregistered:<str> | ...)"/>
+    <input v-model="interfaceFilter" class="form-control mb-1" style="width: 95%" placeholder="filter: [!]<str> | type:[!]<str> | uuid:[!]<str> | location:[!]<str> | desc:[!]<str> | name:[!]<str> | flags:[!]<str> | annotation:[!]<str> | ..."/>
 
     <aside id="InterfacePane" class="SmallBorder">
         <table class="GenericTable">

@@ -35,7 +35,7 @@
 </script>
 
 <template>
-        <input v-model="processFilter" class="W-90 form-control ml-5 mb-2" placeholder="filter: (<str> | name:<str> | user:<str> | pid:<str> | id:<str> | endpoints:<str> | location:<str> | ...)"/>
+        <input v-model="processFilter" class="W-90 form-control ml-5 mb-2" placeholder="filter: [!]<str> | name:[!]<str> | user:[!]<str> | pid:[!]<str> | id:[!]<str> | endpoints:[!]<str> | methods:[!]<str> | ..."/>
 
         <div id="ProcessPane" class="SmallBorder ml-3 mb-2">
             <table class="GenericTable">
