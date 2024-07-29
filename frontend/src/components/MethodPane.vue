@@ -16,8 +16,8 @@
         setup()
         {
             const store = processStore();
-            const { selectedProcess, selectedInterface } = storeToRefs(store);
-            return { selectedInterface, selectedProcess, store }
+            const { selectedProcess, selectedInterface, tabs, selectedTab } = storeToRefs(store);
+            return { tabs, selectedTab, selectedInterface, selectedProcess, store }
         },
 
         methods:
@@ -38,8 +38,13 @@
                 this.editMethod = null;
 
                 let method = this.selectedInterface.methods[index];
-
                 this.store.addMethodName(methodName, method.addr, this.selectedInterface.location)
+
+                if (method.origName === undefined)
+                {
+                    method.origName = method.name;
+                }
+
                 method.name = methodName;
             },
 
@@ -50,6 +55,31 @@
 
                 this.store.addMethodNotes(notes, index, this.selectedInterface.id)
                 this.selectedInterface.methods[index].notes = notes;
+            },
+
+            jumpDecompiled(method)
+            {
+                for (const tab of this.tabs)
+                {
+                    if (tab.origName === this.selectedInterface.id)
+                    {
+                        this.selectedTab = tab.name;
+                        const tabComponent = document.getElementById(tab.origName);
+
+                        if(tabComponent != null)
+                        {
+                            const tabElement = tabComponent.children[0];
+
+                            for (const child of tabElement.children)
+                            {
+                                if (child.textContent.includes(` ${method.name}(`) || child.textContent.includes(` ${method.origName}(`))
+                                {
+                                    child.scrollIntoView();
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -67,7 +97,7 @@
                 <th>Notes</th>
                 <th>Format Address</th>
             </tr>
-            <tr style="cursor: pointer" v-if="selectedInterface" v-for="(method, index) in selectedInterface.methods" @click="selectedMethod = method"
+            <tr style="cursor: pointer" v-if="selectedInterface" v-for="(method, index) in selectedInterface.methods" @click="selectedMethod = method; jumpDecompiled(method)"
                 :class="{ Selected: selectedMethod == method }">
                 <td>{{ index }}</td>
                 <td v-if="selectedInterface && editMethod != method.addr" @dblclick="enableEditing(method.addr, 'Method', method.name)">{{ method.name }}</td>

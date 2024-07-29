@@ -27,78 +27,182 @@
                 this.selectedInterface = null;
             },
 
+            listFilter(list, filter, lambda = (item) => item)
+            {
+                for (const item of list)
+                {
+                    var mod = lambda(item);
+
+                    if (mod.toLowerCase().includes(filter))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            },
+
+            methodFilter(process, filter)
+            {
+                const interfaces =  process.rpc_info.interface_infos;
+
+                for (const intf of interfaces)
+                {
+                    if (this.listFilter(intf.methods, filter, (item) => item.name))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            },
+
+            endpointFilter(process, filter)
+            {
+                const endpoints =  process.rpc_info.server_info.endpoints;
+                return this.listFilter(endpoints, filter, (item) => `${item.protocol}:${item.name}`);
+            },
+
+            casualFilter(process, filter)
+            {
+                let inverse = false;
+
+                if (filter.startsWith('!'))
+                {
+                    filter = filter.substring(1);
+                    inverse = true;
+                }
+
+                return (process.path.toLowerCase().includes(filter) || process.cmdline.toLowerCase().includes(filter) ||
+                        process.user.toLowerCase().includes(filter) || process.pid == filter || this.endpointFilter(process, filter) ||
+                        this.methodFilter(process, filter)) != inverse;
+            },
+
             applyFilter(filter, process)
             {
-                if (!filter)
+                if (filter)
                 {
-                    return true;
-                }
+                    filter = filter.toLowerCase();
 
-                filter = filter.toLowerCase();
-
-                if (!filter.includes(':'))
-                {
-                    return process.path.toLowerCase().includes(filter) || process.cmdline.toLowerCase().includes(filter) ||
-                           process.user.toLowerCase().includes(filter) || process.pid == filter;
-                }
-
-                let result = true;
-                const filterArray = filter.split(/\s*\|\s*/);
-
-                for (const entry of filterArray)
-                {
-                    let key, value;
-                    [key, value] = entry.split(':', 2);
-
-                    if (value === undefined)
+                    if (!filter.includes(':') && !this.casualFilter(process, filter))
                     {
-                        key = key.toLowerCase();
-                        result = result && (process.path.toLowerCase().includes(key) || process.cmdline.toLowerCase().includes(key) ||
-                               process.user.toLowerCase().includes(key) || process.pid == key);
-                        continue;
+                        return false;
                     }
 
-                    else if (key === 'uuid' || key === 'id' || key == 'location')
+                    else
                     {
-                        let found = false;
+                        const filterArray = filter.split(/\s*\|\s*/);
 
-                        if (key === 'uuid')
+                        for (const entry of filterArray)
                         {
-                            key = 'id';
-                        }
+                            let key, value;
+                            let inverse = false;
 
-                        for (const intf of process.rpc_info.interface_infos)
-                        {
-                            if (String(intf[key]).toLowerCase().includes(value))
+                            [key, value] = entry.split(':', 2);
+                            
+                            if (key === 'uuid')
                             {
-                                found = true
+                                key = 'id';
+                            }
+
+                            if (value === undefined)
+                            {
+                                if (!this.casualFilter(process, key))
+                                {
+                                    return false;
+                                }
+
+                                continue;
+                            }
+
+                            if (value.startsWith('!'))
+                            {
+                                value = value.substring(1);
+                                inverse = true;
+                            }
+
+                            let propValue = null;
+
+                            if (Object.hasOwn(process, key))
+                            {
+                                propValue = process[key];
+                            }
+
+                            else if (Object.hasOwn(process.rpc_info.server_info, key))
+                            {
+                                propValue = process.rpc_info.server_info[key];
+
+                                if (key === 'endpoints')
+                                {
+                                    propValue = [];
+
+                                    for (const endpoint of process.rpc_info.server_info[key])
+                                    {
+                                        propValue.push(`${endpoint.protocol}:${endpoint.name}`);
+                                    }
+                                }
+                            }
+
+                            else if (process.rpc_info.interface_infos.length > 0)
+                            {
+                                if (Object.hasOwn(process.rpc_info.interface_infos[0], key))
+                                {
+                                    propValue = [];
+
+                                    for (const intf of process.rpc_info.interface_infos)
+                                    {
+                                        if (key === 'methods')
+                                        {
+                                            propValue = propValue.concat(intf.methods.flatMap((method) => method.name));
+                                        }
+
+                                        else
+                                        {
+                                            propValue.push(intf[key]);
+                                        }
+                                    }
+                                }
+                            }
+
+                            else
+                            {
+                                return false;
+                            }
+
+                            if (propValue !== null)
+                            {
+                                if (Array.isArray(propValue) && propValue.length > 0)
+                                {
+                                    let found = false;
+
+                                    for (const item of propValue)
+                                    {
+                                        if (String(item).toLowerCase().includes(value))
+                                        {
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (!found != inverse)
+                                    {
+                                        return false;
+                                    }
+                                }
+
+                                else
+                                {
+                                    if (String(propValue).toLowerCase().includes(value) == inverse)
+                                    {
+                                        return false;
+                                    }
+                                }
                             }
                         }
-
-                        result = result && found;
-                        continue;
                     }
-
-                    else if (key === 'endpoint')
-                    {
-                        let found = false;
-
-                        for (const endpoint of process.rpc_info.server_info.endpoints)
-                        {
-                            if (endpoint.name.toLowerCase().includes(value))
-                            {
-                                found = true
-                            }
-                        }
-
-                        result = result && found;
-                        continue;
-                    }
-
-                    result = result && (Object.hasOwn(process, key) && String(process[key]).toLowerCase().includes(value));
                 }
 
-                return result;
+                return true;
             }
         },
     }

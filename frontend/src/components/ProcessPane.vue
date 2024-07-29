@@ -12,7 +12,6 @@
         {
             return {
                 lastTabLength: 0,
-                selectedTab: 'Processes',
                 timer: null,
                 editTab: null,
             }
@@ -21,11 +20,11 @@
         setup()
         {
             const store = processStore();
-            const { processTree, refreshTimer, tabs } = storeToRefs(store)
+            const { selectedTab, processTree, refreshTimer, tabs } = storeToRefs(store)
 
             const offlineMode = (import.meta.env.VITE_OFFLINE_MODE != 0) ? true : false;
 
-            return { store, processTree, refreshTimer, tabs, offlineMode }
+            return { store, processTree, refreshTimer, tabs, offlineMode, selectedTab }
         },
 
         components: {
