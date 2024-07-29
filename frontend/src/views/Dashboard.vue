@@ -60,6 +60,6 @@
 
     .SubPane2 {
         width: 100%;
-        height: 39%;
+        height: 34%;
     }
 </style>
