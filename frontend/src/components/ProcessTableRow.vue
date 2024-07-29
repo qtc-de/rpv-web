@@ -27,6 +27,42 @@
                 this.selectedInterface = null;
             },
 
+            listFilter(list, filter, lambda = (item) => item)
+            {
+                for (const item of list)
+                {
+                    var mod = lambda(item);
+
+                    if (mod.toLowerCase().includes(filter))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            },
+
+            methodFilter(process, filter)
+            {
+                const interfaces =  process.rpc_info.interface_infos;
+
+                for (const intf of interfaces)
+                {
+                    if (this.listFilter(intf.methods, filter, (item) => item.name))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            },
+
+            endpointFilter(process, filter)
+            {
+                const endpoints =  process.rpc_info.server_info.endpoints;
+                return this.listFilter(endpoints, filter, (item) => `${item.protocol}:${item.name}`);
+            },
+
             casualFilter(process, filter)
             {
                 let inverse = false;
@@ -38,7 +74,8 @@
                 }
 
                 return (process.path.toLowerCase().includes(filter) || process.cmdline.toLowerCase().includes(filter) ||
-                       process.user.toLowerCase().includes(filter) || process.pid == filter) != inverse;
+                        process.user.toLowerCase().includes(filter) || process.pid == filter || this.endpointFilter(process, filter) ||
+                        this.methodFilter(process, filter)) != inverse;
             },
 
             applyFilter(filter, process)
@@ -97,14 +134,12 @@
 
                                 if (key === 'endpoints')
                                 {
-                                    let mod = [];
+                                    propValue = [];
 
-                                    for (const endpoint of propValue)
+                                    for (const endpoint of process.rpc_info.server_info[key])
                                     {
-                                        mod = `${endpoint.protocol}:${endpoint.name}`;
+                                        propValue.push(`${endpoint.protocol}:${endpoint.name}`);
                                     }
-
-                                    propValue = mod;
                                 }
                             }
 
@@ -116,7 +151,15 @@
 
                                     for (const intf of process.rpc_info.interface_infos)
                                     {
-                                        propValue.push(intf[key]);
+                                        if (key === 'methods')
+                                        {
+                                            propValue = propValue.concat(intf.methods.flatMap((method) => method.name));
+                                        }
+
+                                        else
+                                        {
+                                            propValue.push(intf[key]);
+                                        }
                                     }
                                 }
                             }
@@ -128,7 +171,7 @@
 
                             if (propValue !== null)
                             {
-                                if (Array.isArray(propValue))
+                                if (Array.isArray(propValue) && propValue.length > 0)
                                 {
                                     let found = false;
 
