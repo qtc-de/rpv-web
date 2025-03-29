@@ -144,7 +144,7 @@ struct WebIdlInterface {
 
 // convert_rpv_process_info converts an rpv.RpvProcessInformation structure to the
 // corresponding RpvWebProcessInformation structure.
-fn convert_rpv_process_info(info rpv.RpvProcessInformation, mut icon_cache win.IconCache) RpvWebProcessInformation
+fn convert_rpv_process_info(info rpv.RpvProcessInformation, mut icon_cache win.IconCache, symbol_resolver rpv.SymbolResolver) RpvWebProcessInformation
 {
 	return RpvWebProcessInformation {
 		pid:	info.pid
@@ -158,7 +158,7 @@ fn convert_rpv_process_info(info rpv.RpvProcessInformation, mut icon_cache win.I
 		desc:	info.desc
 		rpc_info: RpcWebInfo {
 			server_info: convert_rpv_server_info(info.rpc_info.server_info)
-			interface_infos: convert_rpv_interface_infos(info.rpc_info.interface_infos)
+			interface_infos: convert_rpv_interface_infos(info.rpc_info.interface_infos, symbol_resolver)
 			rpc_type: info.rpc_info.rpc_type
 		}
 		rpv_info: info
@@ -199,7 +199,7 @@ fn convert_rpv_auth_infos(infos []rpv.RpcAuthInfo) []RpcWebAuthInfo {
 
 // convert_rpv_interface_infos converts a list of rpv.RpcInterfaceInfo structs into a
 // list of RpcWebInterfaceInfo structs
-fn convert_rpv_interface_infos(infos []rpv.RpcInterfaceInfo) []RpcWebInterfaceInfo
+fn convert_rpv_interface_infos(infos []rpv.RpcInterfaceInfo, symbol_resolver rpv.SymbolResolver) []RpcWebInterfaceInfo
 {
 	mut rpv_web_intf_infos := []RpcWebInterfaceInfo{cap: infos.len}
 
@@ -251,9 +251,9 @@ fn convert_rpv_interface_infos(infos []rpv.RpcInterfaceInfo) []RpcWebInterfaceIn
 			sec_callback: convert_rpv_security_callback(info.sec_callback)
 			typ: info.typ
 			ndr_info: convert_rpv_ndr_info(info.ndr_info)
-			methods: convert_rpv_rpc_methods(info.id, info.methods)
+			methods: convert_rpv_rpc_methods(info.id, info.methods, symbol_resolver)
 			flags: rpc_flags
-			notes: g_symbol_resolver.load_uuid_notes(info.id) or { '' }
+			notes: symbol_resolver.load_uuid_notes(info.id) or { '' }
 		}
 	}
 
@@ -286,7 +286,7 @@ fn convert_rpv_ndr_info(info rpv.NdrInfo) WebNdrInfo
 }
 
 // convert_rpv_rpc_method converts an rpv.RpcMethod struct in RpcWebMethod
-fn convert_rpv_rpc_methods(intf_id string, methods []rpv.RpcMethod) []RpcWebMethod
+fn convert_rpv_rpc_methods(intf_id string, methods []rpv.RpcMethod, symbol_resolver rpv.SymbolResolver) []RpcWebMethod
 {
 	mut index := 0
 	mut web_methods := []RpcWebMethod{cap: methods.len}
@@ -297,7 +297,7 @@ fn convert_rpv_rpc_methods(intf_id string, methods []rpv.RpcMethod) []RpcWebMeth
 			offset: '0x${method.offset.hex_full()}'
 			fmt: '0x${method.fmt.hex_full()}'
 			name: method.name
-			notes: g_symbol_resolver.load_uuid_method_notes(intf_id, index.str()) or { '' }
+			notes: symbol_resolver.load_uuid_method_notes(intf_id, index.str()) or { '' }
 		}
 
 		index++
