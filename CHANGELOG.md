@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Switch from `vweb` to `veb` module
 * Switch from `x.json2` to `json` module
 * Get rid of global variables
+* Fix rpv-web binding to other interfaces
 
 
 ## v1.3.0 - July 29, 2024
