@@ -17,6 +17,7 @@ pub struct Context
 pub struct App
 {
 	veb.StaticHandler
+	veb.Middleware[Context]
 pub mut:
 	refresh_error		string = 'Error while refreshing the process list.'
 	icon_cache			win.IconCache
@@ -32,9 +33,15 @@ mut:
 	symbol_path string
 }
 
+pub fn before_request(mut ctx Context)
+{
+    println('[web] Incoming request: ${ctx.req.method} ${ctx.req.url}')
+}
+
 fn main()
 {
 	mut app := &App{}
+	app.use(handler: before_request)
 
 	app.serve_static('/favicon.ico', 'dist/favicon.ico') or
 	{
