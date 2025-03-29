@@ -1,6 +1,6 @@
 module main
 
-import vweb
+import veb
 
 // WebSnapshot helper struct that contains all available RpvWebProcessInformation
 // and all WebIdlInterface structs.
@@ -15,16 +15,16 @@ struct WebSnapshot {
 // of the currently available RPC data and can be later imported back within
 // the frontend.
 @['/api/snapshot'; get]
-pub fn (mut app App) create_snapshot() vweb.Result
+pub fn (mut app App) create_snapshot(mut ctx Context) veb.Result
 {
-	if g_processes.len == 0 || app.query['refresh'] == 'true'
+	if app.processes.len == 0 || ctx.query['refresh'] == 'true'
 	{
 		app.refresh() or
 		{
-			return app.server_error(501)
+			return ctx.server_error(app.refresh_error)
 		}
 	}
 
-	snapshot := take_snapshot()
-	return app.json(snapshot)
+	snapshot := app.take_snapshot()
+	return ctx.json(snapshot)
 }

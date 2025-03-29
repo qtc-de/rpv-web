@@ -1,61 +1,77 @@
 module main
 
 import os
+import veb
 import json
-import vweb
 import time
 import qtc_de.rpv
 import qtc_de.rpv.win
 import cli { Command, Flag }
 
-// In the current state of vweb, we have to use globals to track our
-// in memory state. Tracking this state within the App context does
-// currently not work correctly. Using a dedicated solution like an
-// sqlite database seems to be an overkill. Therefore, we use globals
-// as a temporary workaround.
-__global (
-	g_icon_cache win.IconCache
-	g_settings RpvWebSettings
-	g_processes []RpvWebProcessInformation
-	g_symbol_resolver rpv.SymbolResolver
-)
 
-struct App {
-	vweb.Context
+pub struct Context
+{
+	veb.Context
 }
 
-struct RpvWebSettings {
+pub struct App
+{
+	veb.StaticHandler
+pub mut:
+	refresh_error		string = 'Error while refreshing the process list.'
+	icon_cache			win.IconCache
+	settings			RpvWebSettings
+	processes			[]RpvWebProcessInformation
+	symbol_resolver		rpv.SymbolResolver
+}
+
+struct RpvWebSettings
+{
 	symbol_file string
-	mut:
+mut:
 	symbol_path string
 }
 
-pub fn (app App) before_request()
+pub fn (ctx Context) before_request()
 {
-	println('[web] Incoming request: ${app.req.method} ${app.req.url}')
+	println('[web] Incoming request: ${ctx.req.method} ${ctx.req.url}')
 }
 
 fn main()
 {
 	mut app := &App{}
 
-	app.serve_static('/favicon.ico', 'dist/favicon.ico')
-	app.serve_static('/', 'dist/index.html')
-	app.handle_static('dist', true)
+	app.serve_static('/favicon.ico', 'dist/favicon.ico') or
+	{
+		println('[-] Unable to serve favicon.ico')
+		return
+	}
+
+	app.serve_static('/', 'dist/index.html') or
+	{
+		println('[-] Unable to serve index.html')
+		return
+	}
+
+	app.handle_static('dist', true) or
+	{
+		println('[-] Unable to serve dist folder')
+		return
+	}
 
 	mut cmd := cli.Command
 	{
 		name: 'rpv-web'
-		description: 'An API interface to rpv'
-		version: '1.3.0'
+		description: 'An web API interface to rpv'
+		version: '1.4.0'
 		execute: fn [mut app] (cmd cli.Command)!
 		{
 			snapshot := cmd.flags.get_bool('snapshot') or { false }
 			symbol_file := cmd.flags.get_string('symbol-file') or { 'rpv-web-symbols.toml' }
 			pdb_path := cmd.flags.get_string('pdb-path') or { '' }
 
-			g_settings = RpvWebSettings { symbol_file: symbol_file, symbol_path: pdb_path }
-			g_symbol_resolver = rpv.new_resolver(g_settings.symbol_file, g_settings.symbol_path) or
+			app.settings = RpvWebSettings { symbol_file: symbol_file, symbol_path: pdb_path }
+			app.symbol_resolver = rpv.new_resolver(app.settings.symbol_file, app.settings.symbol_path) or
 			{
 				eprintln('[-] Unable to initialize global symbol resolver: ${err}')
 				return
@@ -72,7 +88,7 @@ fn main()
 				}
 
 				println('[+] Taking a snapshot.')
-				snap := take_snapshot()
+				snap := app.take_snapshot()
 
 				filename := '${time.now().strftime('%Y.%m.%d-%H.%M')}-rpv-web-snapshot.json'
 				println('[+] Writing result to ${filename}.')
@@ -86,7 +102,7 @@ fn main()
 			else
 			{
 				port := cmd.flags.get_int('port') or { 8000 }
-				vweb.run(app, port)
+				veb.run[App, Context](mut app, port)
 			}
 		}
 	}
