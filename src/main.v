@@ -32,30 +32,25 @@ mut:
 	symbol_path string
 }
 
-pub fn (ctx Context) before_request()
-{
-	println('[web] Incoming request: ${ctx.req.method} ${ctx.req.url}')
-}
-
 fn main()
 {
 	mut app := &App{}
 
 	app.serve_static('/favicon.ico', 'dist/favicon.ico') or
 	{
-		println('[-] Unable to serve favicon.ico')
+		eprintln('[-] Unable to serve favicon.ico')
 		return
 	}
 
 	app.serve_static('/', 'dist/index.html') or
 	{
-		println('[-] Unable to serve index.html')
+		eprintln('[-] Unable to serve index.html')
 		return
 	}
 
 	app.handle_static('dist', true) or
 	{
-		println('[-] Unable to serve dist folder')
+		eprintln('[-] Unable to serve dist folder')
 		return
 	}
 
@@ -102,7 +97,12 @@ fn main()
 			else
 			{
 				port := cmd.flags.get_int('port') or { 8000 }
-				veb.run[App, Context](mut app, port)
+				host := cmd.flags.get_string('host') or { 'localhost' }
+
+				veb.run_at[App, Context](mut app, veb.RunParams{ host: host, port: port, family: .ip }) or
+				{
+					eprintln('[-] Unable to start the web server on ${host}:${port}.')
+				}
 			}
 		}
 	}
@@ -111,6 +111,14 @@ fn main()
 		flag: .bool
 		name: 'snapshot'
 		description: 'create a snapshot instead of starting the API server'
+	})
+
+	cmd.add_flag(Flag{
+		flag: .string
+		name: 'host'
+		abbrev: 'h'
+		default_value: ['localhost']
+		description: 'ip address to listen on'
 	})
 
 	cmd.add_flag(Flag{
