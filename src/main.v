@@ -62,8 +62,8 @@ fn main()
 	mut cmd := cli.Command
 	{
 		name: 'rpv-web'
-		description: 'An API interface to rpv'
-		version: '1.3.0'
+		description: 'An web API interface to rpv'
+		version: '1.4.0'
 		execute: fn [mut app] (cmd cli.Command)!
 		{
 			snapshot := cmd.flags.get_bool('snapshot') or { false }

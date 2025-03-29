@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## v1.4.0 - Mar 29, 2025
+
+### Changed
+
+* Switch from `vweb` to `veb` module
+* Switch from `x.json2` to `json` module
+* Get rid of global variables
+
+
 ## v1.3.0 - July 29, 2024
 
 ### Added
