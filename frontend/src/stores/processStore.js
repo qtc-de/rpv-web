@@ -348,7 +348,7 @@ export const processStore = defineStore(
 
                 for (let ctr = 0; ctr < clone.methods.length; ctr++)
                 {
-                    clone.methods[ctr].base = "";
+                    clone.methods[ctr].addr = "";
                     clone.methods[ctr].format = "";
                 }
 
@@ -398,12 +398,12 @@ export const processStore = defineStore(
         {
             if (secCallback.location in this.symbols)
             {
-                this.symbols[secCallback.location][secCallback.base] = callbackName;
+                this.symbols[secCallback.location][secCallback.addr] = callbackName;
             }
 
             else
             {
-                this.symbols[secCallback.location] = { [secCallback.base]: callbackName };
+                this.symbols[secCallback.location] = { [secCallback.addr]: callbackName };
             }
 
             this.applySymbolsToAll();
@@ -424,16 +424,16 @@ export const processStore = defineStore(
             this.applySymbolsToAll();
         },
 
-        addMethodName(methodName, base, location)
+        addMethodName(methodName, addr, location)
         {
             if (location in this.symbols)
             {
-                this.symbols[location][base] = methodName;
+                this.symbols[location][addr] = methodName;
             }
 
             else
             {
-                this.symbols[location] = { [base]: methodName };
+                this.symbols[location] = { [addr]: methodName };
             }
 
             this.applySymbolsToAll();
@@ -518,18 +518,18 @@ export const processStore = defineStore(
                     {
                         for (const method of info.methods)
                         {
-                            if (method.base in this.symbols[info.location])
+                            if (method.addr in this.symbols[info.location])
                             {
-                                method.name = this.symbols[info.location][method.base];
+                                method.name = this.symbols[info.location][method.addr];
                             }
                         }
                     }
 
                     if (info.sec_callback.location in this.symbols)
                     {
-                        if (info.sec_callback.base in this.symbols[info.sec_callback.location])
+                        if (info.sec_callback.addr in this.symbols[info.sec_callback.location])
                         {
-                            info.sec_callback.name = this.symbols[info.sec_callback.location][info.sec_callback.base];
+                            info.sec_callback.name = this.symbols[info.sec_callback.location][info.sec_callback.addr];
                         }
                     }
                 }
