@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## v1.4.1 - Apr XX, 2025
+
+### Changed
+
+* Fix text overflow in interface details pane
+* Fix jumping to decompiled methods not working
+* Fix renaming of methods and sec callbacks
+* Fix command line interface not working
+
+
 ## v1.4.0 - Mar 29, 2025
 
 ### Changed

@@ -374,7 +374,7 @@
             <p id="Logo" class="d-inline-block">RP</p>
             <img id="LogoPng" src="../assets/icons/rpv-web.png"/>
             <p id="Web" class="d-inline-block">WEB</p>
-            <p class="Fs-8 mb-0 ml-4">v1.4.0</p>
+            <p class="Fs-8 mb-0 ml-4">v1.4.1</p>
         </div>
 
         <div id="RightHeadline">

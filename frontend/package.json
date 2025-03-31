@@ -1,7 +1,7 @@
 {
   "name": "rpv-web",
   "description": "A web frontend for rpv",
-  "version": "1.0.0",
+  "version": "1.4.1",
   "homepage": "https://github.com/qtc-de/rpv-web",
   "license": "GPL-3.0",
   "author": {
