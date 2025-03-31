@@ -33,33 +33,15 @@ mut:
 	symbol_path string
 }
 
-pub fn before_request(mut ctx Context)
+pub fn before_request(mut ctx Context) bool
 {
     println('[web] Incoming request: ${ctx.req.method} ${ctx.req.url}')
+	return true
 }
 
 fn main()
 {
 	mut app := &App{}
-	app.use(handler: before_request)
-
-	app.serve_static('/favicon.ico', 'dist/favicon.ico') or
-	{
-		eprintln('[-] Unable to serve favicon.ico')
-		return
-	}
-
-	app.serve_static('/', 'dist/index.html') or
-	{
-		eprintln('[-] Unable to serve index.html')
-		return
-	}
-
-	app.handle_static('dist', true) or
-	{
-		eprintln('[-] Unable to serve dist folder')
-		return
-	}
 
 	mut cmd := cli.Command
 	{
@@ -103,6 +85,26 @@ fn main()
 
 			else
 			{
+				app.use(handler: before_request)
+
+				app.serve_static('/favicon.ico', 'dist/favicon.ico') or
+				{
+					eprintln('[-] Unable to serve favicon.ico')
+					return
+				}
+
+				app.serve_static('/', 'dist/index.html') or
+				{
+					eprintln('[-] Unable to serve index.html')
+					return
+				}
+
+				app.handle_static('dist', true) or
+				{
+					eprintln('[-] Unable to serve dist folder')
+					return
+				}
+
 				port := cmd.flags.get_int('port') or { 8000 }
 				host := cmd.flags.get_string('host') or { 'localhost' }
 
