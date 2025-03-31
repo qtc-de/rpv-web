@@ -187,7 +187,7 @@ export const processStore = defineStore(
                         {
                             'type': 'idl',
                             'name': uuid,
-                            'origName': name,
+                            'origName': uuid,
                             'data': decompiled
                         });
                     });
