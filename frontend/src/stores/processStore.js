@@ -38,24 +38,28 @@ export const processStore = defineStore(
 
     actions:
     {
-        tabExists(name)
+        getTab(name)
         {
             for (const tab of this.tabs)
             {
                 if (tab.name === name || tab.origName === name)
                 {
-                    return true;
+                    return tab;
                 }
             }
 
-            return false;
+            return null;
         },
 
         loadSnapshot(name, snapshot)
         {
-            if (this.tabExists(name))
+            const tab = this.getTab(name);
+
+            if (tab != null)
             {
                 console.log(`Snapshot with name ${name} already exists.`);
+                this.selectedTab = tab;
+
                 return;
             }
 
@@ -77,9 +81,13 @@ export const processStore = defineStore(
 
         compareSnapshots(name, first, second)
         {
-            if (this.tabExists(name))
+            const tab = this.getTab(name);
+
+            if (tab != null)
             {
                 console.log(`Snapshot with name ${name} already exists.`);
+                this.selectedTab = tab;
+
                 return;
             }
 
@@ -146,9 +154,13 @@ export const processStore = defineStore(
 
         async decompile(pid, uuid, snapshotID)
         {
-            if (this.tabExists(uuid))
+            const tab = this.getTab(name);
+
+            if (tab != null)
             {
                 console.log(`Decompiled IDL for ${uuid} already exists.`);
+                this.selectedTab = tab;
+
                 return;
             }
 

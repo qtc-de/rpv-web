@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Fix jumping to decompiled methods not working
 * Fix renaming of methods and sec callbacks
 * Fix command line interface not working
+* Creating a tab that already exists jumps to it
 
 
 ## v1.4.0 - Mar 29, 2025
