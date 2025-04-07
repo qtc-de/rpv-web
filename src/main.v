@@ -47,7 +47,7 @@ fn main()
 	{
 		name: 'rpv-web'
 		description: 'An web API interface to rpv'
-		version: '1.4.0'
+		version: '1.4.1'
 		execute: fn [mut app] (cmd cli.Command)!
 		{
 			snapshot := cmd.flags.get_bool('snapshot') or { false }
