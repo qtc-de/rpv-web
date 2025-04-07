@@ -69,7 +69,8 @@
 
             async saveNotes()
             {
-                if (!this.selectedInterface) {
+                if (!this.selectedInterface)
+                {
                     return
                 }
 
@@ -202,7 +203,7 @@
             </tr>
         </table>
 
-        <textarea ref="Notes" id="NotesArea" class="ml-1 mt-2" v-if="selectedInterface && selectedTab == 'Notes'" v-on:keyup.enter="saveNotes()" v-on:blur="saveNotes()">{{selectedInterface.notes}} </textarea>
+        <textarea ref="Notes" id="NotesArea" class="ml-1 mt-2" v-if="selectedInterface && selectedTab == 'Notes'" v-on:input="saveNotes()" :value="selectedInterface.notes"></textarea>
     </div>
 </template>
 
