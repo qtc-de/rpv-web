@@ -17,7 +17,7 @@ var selectedTab = 'Processes';
 var processFilter = null;
 var interfaceFilter = null;
 
-export const processStore = defineStore(
+export const processStore = defineStore('rpv-web',
 {
     id: 'processes',
     state: () => (
@@ -58,7 +58,7 @@ export const processStore = defineStore(
             if (tab != null)
             {
                 console.log(`Snapshot with name ${name} already exists.`);
-                this.selectedTab = tab;
+                this.selectedTab = tab.name;
 
                 return;
             }
@@ -86,7 +86,7 @@ export const processStore = defineStore(
             if (tab != null)
             {
                 console.log(`Snapshot with name ${name} already exists.`);
-                this.selectedTab = tab;
+                this.selectedTab = tab.name;
 
                 return;
             }
@@ -154,12 +154,12 @@ export const processStore = defineStore(
 
         async decompile(pid, uuid, snapshotID)
         {
-            const tab = this.getTab(name);
+            const tab = this.getTab(uuid);
 
             if (tab != null)
             {
                 console.log(`Decompiled IDL for ${uuid} already exists.`);
-                this.selectedTab = tab;
+                this.selectedTab = tab.name;
 
                 return;
             }
