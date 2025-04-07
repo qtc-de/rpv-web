@@ -116,6 +116,7 @@ struct WebNdrInfo {
 	midl_version u32
 	flags []string
 	syntax string
+	syntax_name string
 }
 
 // WebSecurityCallback is the rpv-web version of SecurityCallback. Fields contained in
@@ -282,6 +283,7 @@ fn convert_rpv_ndr_info(info rpv.NdrInfo) WebNdrInfo
 		midl_version: info.midl_version
 		flags: flag_str
 		syntax: info.syntax
+		syntax_name: info.syntax_name
 	}
 }
 

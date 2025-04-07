@@ -182,6 +182,10 @@
                 <td v-if="selectedInterface">{{ selectedInterface.ndr_info.syntax }}</td>
             </tr>
             <tr>
+                <td>Syntax Name</td>
+                <td v-if="selectedInterface">{{ selectedInterface.ndr_info.syntax_name }}</td>
+            </tr>
+            <tr>
                 <td>NDR Version</td>
                 <td v-if="selectedInterface">0x{{ selectedInterface.ndr_info.ndr_version.toString(16) }}</td>
             </tr>
