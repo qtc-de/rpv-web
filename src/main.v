@@ -35,7 +35,7 @@ mut:
 
 pub fn before_request(mut ctx Context) bool
 {
-    println('[web] Incoming request: ${ctx.req.method} ${ctx.req.url}')
+	println('[web] Incoming request: ${ctx.req.method} ${ctx.req.url}')
 	return true
 }
 
