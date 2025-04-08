@@ -19,11 +19,11 @@ pub struct App
 	veb.StaticHandler
 	veb.Middleware[Context]
 pub mut:
-	refresh_error		string = 'Error while refreshing the process list.'
-	icon_cache			win.IconCache
-	settings			RpvWebSettings
-	processes			[]RpvWebProcessInformation
-	symbol_resolver		rpv.SymbolResolver
+	refresh_error   string = 'Error while refreshing the process list.'
+	icon_cache      win.IconCache
+	settings        RpvWebSettings
+	processes       []RpvWebProcessInformation
+	symbol_resolver rpv.SymbolResolver
 }
 
 struct RpvWebSettings
@@ -33,39 +33,21 @@ mut:
 	symbol_path string
 }
 
-pub fn before_request(mut ctx Context)
+pub fn before_request(mut ctx Context) bool
 {
-    println('[web] Incoming request: ${ctx.req.method} ${ctx.req.url}')
+	println('[web] Incoming request: ${ctx.req.method} ${ctx.req.url}')
+	return true
 }
 
 fn main()
 {
 	mut app := &App{}
-	app.use(handler: before_request)
-
-	app.serve_static('/favicon.ico', 'dist/favicon.ico') or
-	{
-		eprintln('[-] Unable to serve favicon.ico')
-		return
-	}
-
-	app.serve_static('/', 'dist/index.html') or
-	{
-		eprintln('[-] Unable to serve index.html')
-		return
-	}
-
-	app.handle_static('dist', true) or
-	{
-		eprintln('[-] Unable to serve dist folder')
-		return
-	}
 
 	mut cmd := cli.Command
 	{
 		name: 'rpv-web'
 		description: 'An web API interface to rpv'
-		version: '1.4.0'
+		version: '1.4.1'
 		execute: fn [mut app] (cmd cli.Command)!
 		{
 			snapshot := cmd.flags.get_bool('snapshot') or { false }
@@ -103,6 +85,26 @@ fn main()
 
 			else
 			{
+				app.use(handler: before_request)
+
+				app.serve_static('/favicon.ico', 'dist/favicon.ico') or
+				{
+					eprintln('[-] Unable to serve favicon.ico')
+					return
+				}
+
+				app.serve_static('/', 'dist/index.html') or
+				{
+					eprintln('[-] Unable to serve index.html')
+					return
+				}
+
+				app.handle_static('dist', true) or
+				{
+					eprintln('[-] Unable to serve dist folder')
+					return
+				}
+
 				port := cmd.flags.get_int('port') or { 8000 }
 				host := cmd.flags.get_string('host') or { 'localhost' }
 
@@ -114,38 +116,43 @@ fn main()
 		}
 	}
 
-	cmd.add_flag(Flag{
-		flag: .bool
-		name: 'snapshot'
+	cmd.add_flag(Flag
+	{
+		flag:        .bool
+		name:        'snapshot'
 		description: 'create a snapshot instead of starting the API server'
 	})
 
-	cmd.add_flag(Flag{
-		flag: .string
-		name: 'host'
-		abbrev: 'h'
+	cmd.add_flag(Flag
+	{
+		flag:          .string
+		name:          'host'
+		abbrev:        'h'
 		default_value: ['localhost']
-		description: 'ip address to listen on'
+		description:   'ip address to listen on'
 	})
 
-	cmd.add_flag(Flag{
-		flag: .int
-		name: 'port'
-		abbrev: 'p'
+	cmd.add_flag(Flag
+	{
+		flag:          .int
+		name:          'port'
+		abbrev:        'p'
 		default_value: ['8000']
-		description: 'port to start the API server on'
+		description:   'port to start the API server on'
 	})
 
-	cmd.add_flag(Flag{
-		flag: .string
-		name: 'symbol-file'
+	cmd.add_flag(Flag
+	{
+		flag:          .string
+		name:          'symbol-file'
 		default_value: ['rpv-web-symbols.toml']
-		description: 'path to the rpv symbol file to use'
+		description:   'path to the rpv symbol file to use'
 	})
 
-	cmd.add_flag(Flag{
-		flag: .string
-		name: 'pdb-path'
+	cmd.add_flag(Flag
+	{
+		flag:        .string
+		name:        'pdb-path'
 		description: 'path to a folder containing pdb files'
 	})
 

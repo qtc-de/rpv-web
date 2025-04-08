@@ -17,7 +17,7 @@ var selectedTab = 'Processes';
 var processFilter = null;
 var interfaceFilter = null;
 
-export const processStore = defineStore(
+export const processStore = defineStore('rpv-web',
 {
     id: 'processes',
     state: () => (
@@ -38,24 +38,28 @@ export const processStore = defineStore(
 
     actions:
     {
-        tabExists(name)
+        getTab(name)
         {
             for (const tab of this.tabs)
             {
                 if (tab.name === name || tab.origName === name)
                 {
-                    return true;
+                    return tab;
                 }
             }
 
-            return false;
+            return null;
         },
 
         loadSnapshot(name, snapshot)
         {
-            if (this.tabExists(name))
+            const tab = this.getTab(name);
+
+            if (tab != null)
             {
                 console.log(`Snapshot with name ${name} already exists.`);
+                this.selectedTab = tab.name;
+
                 return;
             }
 
@@ -77,9 +81,13 @@ export const processStore = defineStore(
 
         compareSnapshots(name, first, second)
         {
-            if (this.tabExists(name))
+            const tab = this.getTab(name);
+
+            if (tab != null)
             {
                 console.log(`Snapshot with name ${name} already exists.`);
+                this.selectedTab = tab.name;
+
                 return;
             }
 
@@ -146,9 +154,13 @@ export const processStore = defineStore(
 
         async decompile(pid, uuid, snapshotID)
         {
-            if (this.tabExists(uuid))
+            const tab = this.getTab(uuid);
+
+            if (tab != null)
             {
                 console.log(`Decompiled IDL for ${uuid} already exists.`);
+                this.selectedTab = tab.name;
+
                 return;
             }
 
@@ -187,7 +199,7 @@ export const processStore = defineStore(
                         {
                             'type': 'idl',
                             'name': uuid,
-                            'origName': name,
+                            'origName': uuid,
                             'data': decompiled
                         });
                     });
@@ -348,7 +360,7 @@ export const processStore = defineStore(
 
                 for (let ctr = 0; ctr < clone.methods.length; ctr++)
                 {
-                    clone.methods[ctr].base = "";
+                    clone.methods[ctr].addr = "";
                     clone.methods[ctr].format = "";
                 }
 
@@ -398,12 +410,12 @@ export const processStore = defineStore(
         {
             if (secCallback.location in this.symbols)
             {
-                this.symbols[secCallback.location][secCallback.base] = callbackName;
+                this.symbols[secCallback.location][secCallback.addr] = callbackName;
             }
 
             else
             {
-                this.symbols[secCallback.location] = { [secCallback.base]: callbackName };
+                this.symbols[secCallback.location] = { [secCallback.addr]: callbackName };
             }
 
             this.applySymbolsToAll();
@@ -424,16 +436,16 @@ export const processStore = defineStore(
             this.applySymbolsToAll();
         },
 
-        addMethodName(methodName, base, location)
+        addMethodName(methodName, addr, location)
         {
             if (location in this.symbols)
             {
-                this.symbols[location][base] = methodName;
+                this.symbols[location][addr] = methodName;
             }
 
             else
             {
-                this.symbols[location] = { [base]: methodName };
+                this.symbols[location] = { [addr]: methodName };
             }
 
             this.applySymbolsToAll();
@@ -518,18 +530,18 @@ export const processStore = defineStore(
                     {
                         for (const method of info.methods)
                         {
-                            if (method.base in this.symbols[info.location])
+                            if (method.addr in this.symbols[info.location])
                             {
-                                method.name = this.symbols[info.location][method.base];
+                                method.name = this.symbols[info.location][method.addr];
                             }
                         }
                     }
 
                     if (info.sec_callback.location in this.symbols)
                     {
-                        if (info.sec_callback.base in this.symbols[info.sec_callback.location])
+                        if (info.sec_callback.addr in this.symbols[info.sec_callback.location])
                         {
-                            info.sec_callback.name = this.symbols[info.sec_callback.location][info.sec_callback.base];
+                            info.sec_callback.name = this.symbols[info.sec_callback.location][info.sec_callback.addr];
                         }
                     }
                 }
