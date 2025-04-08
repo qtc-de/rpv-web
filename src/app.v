@@ -166,8 +166,9 @@ pub fn (app &App) take_snapshot() WebSnapshot
 		}
 	}
 
-	return WebSnapshot {
+	return WebSnapshot
+	{
 		processes: process_tree
-		idl_data: idl_data
+		idl_data:  idl_data
 	}
 }

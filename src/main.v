@@ -19,11 +19,11 @@ pub struct App
 	veb.StaticHandler
 	veb.Middleware[Context]
 pub mut:
-	refresh_error		string = 'Error while refreshing the process list.'
-	icon_cache			win.IconCache
-	settings			RpvWebSettings
-	processes			[]RpvWebProcessInformation
-	symbol_resolver		rpv.SymbolResolver
+	refresh_error   string = 'Error while refreshing the process list.'
+	icon_cache      win.IconCache
+	settings        RpvWebSettings
+	processes       []RpvWebProcessInformation
+	symbol_resolver rpv.SymbolResolver
 }
 
 struct RpvWebSettings
@@ -116,38 +116,43 @@ fn main()
 		}
 	}
 
-	cmd.add_flag(Flag{
-		flag: .bool
-		name: 'snapshot'
+	cmd.add_flag(Flag
+	{
+		flag:        .bool
+		name:        'snapshot'
 		description: 'create a snapshot instead of starting the API server'
 	})
 
-	cmd.add_flag(Flag{
-		flag: .string
-		name: 'host'
-		abbrev: 'h'
+	cmd.add_flag(Flag
+	{
+		flag:          .string
+		name:          'host'
+		abbrev:        'h'
 		default_value: ['localhost']
-		description: 'ip address to listen on'
+		description:   'ip address to listen on'
 	})
 
-	cmd.add_flag(Flag{
-		flag: .int
-		name: 'port'
-		abbrev: 'p'
+	cmd.add_flag(Flag
+	{
+		flag:          .int
+		name:          'port'
+		abbrev:        'p'
 		default_value: ['8000']
-		description: 'port to start the API server on'
+		description:   'port to start the API server on'
 	})
 
-	cmd.add_flag(Flag{
-		flag: .string
-		name: 'symbol-file'
+	cmd.add_flag(Flag
+	{
+		flag:          .string
+		name:          'symbol-file'
 		default_value: ['rpv-web-symbols.toml']
-		description: 'path to the rpv symbol file to use'
+		description:   'path to the rpv symbol file to use'
 	})
 
-	cmd.add_flag(Flag{
-		flag: .string
-		name: 'pdb-path'
+	cmd.add_flag(Flag
+	{
+		flag:        .string
+		name:        'pdb-path'
 		description: 'path to a folder containing pdb files'
 	})
 

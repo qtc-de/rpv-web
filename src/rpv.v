@@ -15,72 +15,76 @@ import qtc_de.rpv.win
 // access to more detailed RPC data. However, this structure is excluded from
 // the json output.
 @[heap]
-struct RpvWebProcessInformation {
-	pub:
-	pid		u32
-	ppid	u32
-	name	string
-	path	string
-	cmdline string
-	user	string
-	version u64
-	icon    string
-	desc	string
+struct RpvWebProcessInformation
+{
+pub:
+	pid      u32
+	ppid     u32
+	name     string
+	path     string
+	cmdline  string
+	user     string
+	version  u64
+	icon     string
+	desc     string
 	rpc_info RpcWebInfo
-	mut:
+mut:
 	rpv_info rpv.RpvProcessInformation @[skip]
-	childs  []RpvWebProcessInformation
+	childs   []RpvWebProcessInformation
 }
 
 // RpcWebInfo is the rpv-web version of RpcInfo. All fields from the corresponding
 // rpv type are replaced with rpv-web versions except of rpc_type which contains
 // the original rpv.RpcType value.
 @[heap]
-struct RpcWebInfo {
-	pub:
-	server_info RpcWebServerInfo
+struct RpcWebInfo
+{
+pub:
+	server_info     RpcWebServerInfo
 	interface_infos []RpcWebInterfaceInfo
-	rpc_type rpv.RpcType
+	rpc_type        rpv.RpcType
 }
 
 // RpcWebServerInfo is the rpv-web version of RpcServerInfo. Fields contained in
 // this structure were reduced to the one that are displayed within the graphical
 // user interface. Binary types like pointers were converted to strings.
 @[heap]
-struct RpcWebServerInfo {
-	pub:
-	base string
-	out_calls u32
-	in_calls u32
-	in_packets u32
+struct RpcWebServerInfo
+{
+pub:
+	base        string
+	out_calls   u32
+	in_calls    u32
+	in_packets  u32
 	out_packets u32
-	intf_count int
-	auth_info []RpcWebAuthInfo
-	endpoints []rpv.RpcEndpoint
+	intf_count  int
+	auth_info   []RpcWebAuthInfo
+	endpoints   []rpv.RpcEndpoint
 }
 
 // RpcWebInterfaceInfo is the rpv-web version of RpcInterfaceInfo. Fields contained in
 // this structure were reduced to the one that are displayed within the graphical
 // user interface. Binary types like pointers were converted to strings.
 @[heap]
-struct RpcWebInterfaceInfo {
-	pub:
-	id string
-	version string
-	base string
+struct RpcWebInterfaceInfo
+{
+pub:
+	id                  string
+	version             string
+	base                string
 	dispatch_table_addr string
-	annotation string
-	location string
-	module_base string
-	description string
-	ep_registered bool
-	ndr_info WebNdrInfo
-	typ rpv.RpcType
-	methods []RpcWebMethod
-	flags []string
-	mut:
-	name string
-	notes string
+	annotation          string
+	location            string
+	module_base         string
+	description         string
+	ep_registered       bool
+	ndr_info            WebNdrInfo
+	typ                 rpv.RpcType
+	methods             []RpcWebMethod
+	flags               []string
+mut:
+	name         string
+	notes        string
 	sec_callback WebSecurityCallback
 }
 
@@ -88,12 +92,13 @@ struct RpcWebInterfaceInfo {
 // this structure were reduced to the one that are displayed within the graphical
 // user interface.
 @[heap]
-struct RpcWebMethod {
-	addr string
+struct RpcWebMethod
+{
+	addr   string
 	offset string
-	fmt string
-	mut:
-	name string
+	fmt    string
+mut:
+	name  string
 	notes string
 }
 
@@ -101,34 +106,37 @@ struct RpcWebMethod {
 // this structure were reduced to the one that are displayed within the graphical
 // user interface.
 @[heap]
-struct RpcWebAuthInfo {
+struct RpcWebAuthInfo
+{
 	principal string
-	name string
-	dll string
+	name      string
+	dll       string
 }
 
 // WebNdrInfo is the rpv-web version of NdrInfo. Fields contained in
 // this structure were reduced to the one that are displayed within the graphical
 // user interface.
 @[heap]
-struct WebNdrInfo {
-	ndr_version u32
+struct WebNdrInfo
+{
+	ndr_version  u32
 	midl_version u32
-	flags []string
-	syntax string
-	syntax_name string
+	flags        []string
+	syntax       string
+	syntax_name  string
 }
 
 // WebSecurityCallback is the rpv-web version of SecurityCallback. Fields contained in
 // this structure were reduced to the one that are displayed within the graphical
 // user interface.
 @[heap]
-struct WebSecurityCallback {
-	addr string
-	offset string
-	location string
+struct WebSecurityCallback
+{
+	addr        string
+	offset      string
+	location    string
 	description string
-	mut:
+mut:
 	name string
 }
 
@@ -136,62 +144,70 @@ struct WebSecurityCallback {
 // this structure were reduced to the one that are displayed within the graphical
 // user interface.
 @[heap]
-struct WebIdlInterface {
-	id string
-	name string
+struct WebIdlInterface
+{
+	id      string
+	name    string
 	version string
-	code string
+	code    string
 }
 
 // convert_rpv_process_info converts an rpv.RpvProcessInformation structure to the
 // corresponding RpvWebProcessInformation structure.
 fn convert_rpv_process_info(info rpv.RpvProcessInformation, mut icon_cache win.IconCache, symbol_resolver rpv.SymbolResolver) RpvWebProcessInformation
 {
-	return RpvWebProcessInformation {
-		pid:	info.pid
-		ppid:	info.ppid
-		name:	info.name
-		path:	info.path
-		cmdline: info.cmdline
-		user:	info.user
-		version: info.version
-		icon:   icon_cache.get(info.path) or { '' }
-		desc:	info.desc
-		rpc_info: RpcWebInfo {
-			server_info: convert_rpv_server_info(info.rpc_info.server_info)
+	return RpvWebProcessInformation
+	{
+		pid:      info.pid
+		ppid:     info.ppid
+		name:     info.name
+		path:     info.path
+		cmdline:  info.cmdline
+		user:     info.user
+		version:  info.version
+		icon:     icon_cache.get(info.path) or { '' }
+		desc:     info.desc
+		rpc_info: RpcWebInfo
+		{
+			server_info:     convert_rpv_server_info(info.rpc_info.server_info)
 			interface_infos: convert_rpv_interface_infos(info.rpc_info.interface_infos, symbol_resolver)
-			rpc_type: info.rpc_info.rpc_type
+			rpc_type:        info.rpc_info.rpc_type
 		}
 		rpv_info: info
-		childs: []RpvWebProcessInformation{cap: info.childs.len}
+		childs:   []RpvWebProcessInformation{cap: info.childs.len}
 	}
 }
 
 // convert_rpv_server_info converts an rpv.RpvServerInfo structure to the corresponding
 // RpvWebServerInfo structure.
-fn convert_rpv_server_info(info rpv.RpcServerInfo) RpcWebServerInfo {
-	return RpcWebServerInfo {
-		base: '0x${info.base.hex_full()}'
-		out_calls: info.server.out_calls
-		in_calls: info.server.in_calls
-		in_packets: info.server.in_packets
+fn convert_rpv_server_info(info rpv.RpcServerInfo) RpcWebServerInfo
+{
+	return RpcWebServerInfo
+	{
+		base:        '0x${info.base.hex_full()}'
+		out_calls:   info.server.out_calls
+		in_calls:    info.server.in_calls
+		in_packets:  info.server.in_packets
 		out_packets: info.server.out_packets
-		intf_count: info.intf_count
-		auth_info: convert_rpv_auth_infos(info.auth_infos)
-		endpoints: info.endpoints
+		intf_count:  info.intf_count
+		auth_info:   convert_rpv_auth_infos(info.auth_infos)
+		endpoints:   info.endpoints
 	}
 }
 
 // convert_rpv_auth_infos converts a list of rpv.RpcAuthInfo structs into a list of
 // RpcWebAuthInfo structs.
-fn convert_rpv_auth_infos(infos []rpv.RpcAuthInfo) []RpcWebAuthInfo {
+fn convert_rpv_auth_infos(infos []rpv.RpcAuthInfo) []RpcWebAuthInfo
+{
 	mut rpv_web_auth_infos := []RpcWebAuthInfo{cap: infos.len}
 
-	for info in infos {
-		rpv_web_auth_infos << RpcWebAuthInfo {
+	for info in infos
+	{
+		rpv_web_auth_infos << RpcWebAuthInfo
+		{
 			principal: info.principal
-			name: info.package.name
-			dll: info.dll
+			name:      info.package.name
+			dll:       info.dll
 		}
 	}
 
@@ -238,23 +254,24 @@ fn convert_rpv_interface_infos(infos []rpv.RpcInterfaceInfo, symbol_resolver rpv
 			rpc_flags << 'RPC_IF_SEC_NO_CACHE'
 		}
 
-		rpv_web_intf_infos << RpcWebInterfaceInfo {
-			id: info.id
-			version: info.version
-			base: '0x${info.base.hex_full()}'
-			name: info.name
+		rpv_web_intf_infos << RpcWebInterfaceInfo
+		{
+			id:                  info.id
+			version:             info.version
+			base:                '0x${info.base.hex_full()}'
+			name:                info.name
 			dispatch_table_addr: '0x${info.dispatch_table_addr.hex_full()}'
-			annotation: info.annotation
-			location: info.location.path
-			module_base: '0x${info.location.base.hex_full()}'
-			description: info.location.desc
-			ep_registered: info.ep_registered
-			sec_callback: convert_rpv_security_callback(info.sec_callback)
-			typ: info.typ
-			ndr_info: convert_rpv_ndr_info(info.ndr_info)
-			methods: convert_rpv_rpc_methods(info.id, info.methods, symbol_resolver)
-			flags: rpc_flags
-			notes: symbol_resolver.load_uuid_notes(info.id) or { '' }
+			annotation:          info.annotation
+			location:            info.location.path
+			module_base:         '0x${info.location.base.hex_full()}'
+			description:         info.location.desc
+			ep_registered:       info.ep_registered
+			sec_callback:        convert_rpv_security_callback(info.sec_callback)
+			typ:                 info.typ
+			ndr_info:            convert_rpv_ndr_info(info.ndr_info)
+			methods:             convert_rpv_rpc_methods(info.id, info.methods, symbol_resolver)
+			flags:               rpc_flags
+			notes:               symbol_resolver.load_uuid_notes(info.id) or { '' }
 		}
 	}
 
@@ -266,24 +283,28 @@ fn convert_rpv_ndr_info(info rpv.NdrInfo) WebNdrInfo
 {
 	mut flag_str := []string{cap: 3}
 
-	if info.flags & usize(C.RPCFLG_HAS_MULTI_SYNTAXES) != 0 {
+	if info.flags & usize(C.RPCFLG_HAS_MULTI_SYNTAXES) != 0
+	{
 		flag_str << "RPCFLG_HAS_MULTI_SYNTAXES"
 	}
 
-	if info.flags & usize(C.RPCFLG_HAS_CALLBACK) != 0 {
+	if info.flags & usize(C.RPCFLG_HAS_CALLBACK) != 0
+	{
 		flag_str << "RPCFLG_HAS_CALLBACK"
 	}
 
-	if info.flags & usize(C.RPC_INTERFACE_HAS_PIPES) != 0 {
+	if info.flags & usize(C.RPC_INTERFACE_HAS_PIPES) != 0
+	{
 		flag_str << "RPC_INTERFACE_HAS_PIPES"
 	}
 
-	return WebNdrInfo {
-		ndr_version: info.ndr_version
+	return WebNdrInfo
+	{
+		ndr_version:  info.ndr_version
 		midl_version: info.midl_version
-		flags: flag_str
-		syntax: info.syntax
-		syntax_name: info.syntax_name
+		flags:        flag_str
+		syntax:       info.syntax
+		syntax_name:  info.syntax_name
 	}
 }
 
@@ -293,13 +314,15 @@ fn convert_rpv_rpc_methods(intf_id string, methods []rpv.RpcMethod, symbol_resol
 	mut index := 0
 	mut web_methods := []RpcWebMethod{cap: methods.len}
 
-	for method in methods {
-		web_methods << RpcWebMethod {
-			addr: '0x${method.addr.hex_full()}'
+	for method in methods
+	{
+		web_methods << RpcWebMethod
+		{
+			addr:   '0x${method.addr.hex_full()}'
 			offset: '0x${method.offset.hex_full()}'
-			fmt: '0x${method.fmt.hex_full()}'
-			name: method.name
-			notes: symbol_resolver.load_uuid_method_notes(intf_id, index.str()) or { '' }
+			fmt:    '0x${method.fmt.hex_full()}'
+			name:   method.name
+			notes:  symbol_resolver.load_uuid_method_notes(intf_id, index.str()) or { '' }
 		}
 
 		index++
@@ -311,11 +334,12 @@ fn convert_rpv_rpc_methods(intf_id string, methods []rpv.RpcMethod, symbol_resol
 // convert_rpv_security_callback converts an rpv.SecurityCallback struct to WebSecurityCallback
 fn convert_rpv_security_callback(callback rpv.SecurityCallback) WebSecurityCallback
 {
-	return WebSecurityCallback {
-		addr: '0x${callback.addr.hex_full()}'
-		offset: '0x${callback.offset.hex_full()}'
-		name: callback.name
-		location: callback.location.path
+	return WebSecurityCallback
+	{
+		addr:        '0x${callback.addr.hex_full()}'
+		offset:      '0x${callback.offset.hex_full()}'
+		name:        callback.name
+		location:    callback.location.path
 		description: callback.location.desc
 	}
 }
@@ -325,9 +349,9 @@ fn convert_rpv_midl_interface(midl rpv.MidlInterface) WebIdlInterface
 {
 	return WebIdlInterface
 	{
-		id: midl.id
-		name: midl.name
+		id:      midl.id
+		name:    midl.name
 		version: midl.version
-		code: midl.format()
+		code:    midl.format()
 	}
 }
