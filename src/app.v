@@ -137,7 +137,7 @@ pub fn (app &App) get_rpv_interface(pid u32, uuid string)? rpv.RpcInterfaceInfo
 // calculate their child relationship and to decompile their RPC interfaces.
 // All this information is stored in a WebSnapshot struct that is returned to
 // the caller.
-pub fn (app &App) take_snapshot() WebSnapshot
+pub fn (mut app App) take_snapshot() []RpvWebProcessInformation
 {
 	mut childs := []u32{cap: app.processes.len}
 
@@ -150,9 +150,8 @@ pub fn (app &App) take_snapshot() WebSnapshot
 	}
 
 	mut process_tree := []RpvWebProcessInformation{cap: app.processes.len - childs.len}
-	mut idl_data := []WebIdlInterface{cap: app.processes.len}
 
-	for process in app.processes
+	for mut process in app.processes
 	{
 		if !childs.contains(process.pid)
 		{
@@ -161,14 +160,17 @@ pub fn (app &App) take_snapshot() WebSnapshot
 
 		for intf_info in process.rpv_info.rpc_info.interface_infos
 		{
-			midl_interface := intf_info.decode_all_methods(process.pid) or { continue }
-			idl_data << convert_rpv_midl_interface(midl_interface)
+			idl := intf_info.decode_all_methods(process.pid) or { continue }
+
+			for mut web_info in process.rpc_info.interface_infos
+			{
+				if web_info.id == intf_info.id
+				{
+					web_info.idl = convert_rpv_midl_interface(idl)
+				}
+			}
 		}
 	}
 
-	return WebSnapshot
-	{
-		processes: process_tree
-		idl_data:  idl_data
-	}
+	return process_tree
 }

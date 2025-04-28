@@ -85,6 +85,7 @@ pub:
 mut:
 	name         string
 	notes        string
+	idl          WebIdlInterface
 	sec_callback WebSecurityCallback
 }
 
@@ -265,6 +266,7 @@ fn convert_rpv_interface_infos(infos []rpv.RpcInterfaceInfo, symbol_resolver rpv
 			location:            info.location.path
 			module_base:         '0x${info.location.base.hex_full()}'
 			description:         info.location.desc
+			idl:                 WebIdlInterface { id: '', name: '', version: '', code: '' }
 			ep_registered:       info.ep_registered
 			sec_callback:        convert_rpv_security_callback(info.sec_callback)
 			typ:                 info.typ
