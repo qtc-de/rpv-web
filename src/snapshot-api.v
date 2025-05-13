@@ -2,13 +2,6 @@ module main
 
 import veb
 
-// WebSnapshot helper struct that contains all available RpvWebProcessInformation
-// and all WebIdlInterface structs.
-struct WebSnapshot
-{
-	processes []RpvWebProcessInformation
-	idl_data  []WebIdlInterface
-}
 
 // create_snapshot creates a new RPC snapshot and returns the corresponding
 // WebSnapshot struct within the response. This struct represents a full mirror
